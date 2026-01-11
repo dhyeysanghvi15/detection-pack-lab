@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-label="Detection Pack Lab — Sigma to Elastic to CI-verified evidence">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#22d3ee" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0b1220" stop-opacity="1"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="25%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.35"/>
+      <stop offset="65%" stop-color="#7c3aed" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+    <style>
+      .bg { fill: #070a10; }
+      .panel { fill: rgba(255,255,255,0.06); stroke: rgba(255,255,255,0.14); }
+      .muted { fill: rgba(255,255,255,0.70); font: 600 16px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+      .title { fill: rgba(255,255,255,0.92); font: 800 40px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; letter-spacing: -0.02em; }
+      .mono { fill: rgba(255,255,255,0.78); font: 600 14px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+      .pill { fill: rgba(255,255,255,0.06); stroke: rgba(255,255,255,0.14); }
+      .pillText { fill: rgba(255,255,255,0.85); font: 700 12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; letter-spacing: 0.02em; }
+      .wire { stroke: rgba(34,211,238,0.35); stroke-width: 2; fill: none; }
+      .wire2 { stroke: rgba(124,58,237,0.35); stroke-width: 2; fill: none; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="320" rx="26"/>
+  <rect x="0" y="0" width="1200" height="320" rx="26" fill="url(#g1)" opacity="0.65"/>
+  <circle cx="320" cy="120" r="220" fill="url(#glow)" filter="url(#blur)"/>
+
+  <g filter="url(#shadow)">
+    <rect class="panel" x="36" y="34" width="1128" height="252" rx="20"/>
+  </g>
+
+  <g>
+    <text x="78" y="108" class="title">Detection Pack Lab</text>
+    <text x="78" y="144" class="muted">Sigma → Elastic → Deterministic replay → CI artifacts → Static evidence website</text>
+
+    <g transform="translate(78,170)">
+      <rect class="pill" x="0" y="0" width="180" height="30" rx="999"/>
+      <text class="pillText" x="16" y="20">CI-VERIFIED</text>
+
+      <rect class="pill" x="194" y="0" width="192" height="30" rx="999"/>
+      <text class="pillText" x="210" y="20">OFFLINE STATIC</text>
+
+      <rect class="pill" x="400" y="0" width="230" height="30" rx="999"/>
+      <text class="pillText" x="416" y="20">ARTIFACT-DRIVEN</text>
+    </g>
+
+    <g transform="translate(78,220)">
+      <text class="mono" x="0" y="0">docker compose up --build</text>
+      <text class="mono" x="0" y="20">python harness/run.py test  •  python harness/run.py artifacts</text>
+      <text class="mono" x="0" y="40">cd site && npm ci && npm run build && npm run export</text>
+    </g>
+  </g>
+
+  <!-- animated “signal” lines (SMIL; safe fallback to static if disabled) -->
+  <g opacity="0.95">
+    <path class="wire" d="M860 88 C 930 88, 950 110, 1018 110 C 1080 110, 1100 92, 1132 92" />
+    <circle cx="860" cy="88" r="4" fill="rgba(34,211,238,0.95)">
+      <animate attributeName="cx" dur="2.8s" repeatCount="indefinite" values="860;1132;860"/>
+      <animate attributeName="opacity" dur="2.8s" repeatCount="indefinite" values="0.2;1;0.2"/>
+    </circle>
+
+    <path class="wire2" d="M860 132 C 940 132, 960 158, 1040 158 C 1100 158, 1112 140, 1132 140" />
+    <circle cx="860" cy="132" r="4" fill="rgba(124,58,237,0.95)">
+      <animate attributeName="cx" dur="3.4s" repeatCount="indefinite" values="860;1132;860"/>
+      <animate attributeName="opacity" dur="3.4s" repeatCount="indefinite" values="0.15;1;0.15"/>
+    </circle>
+
+    <g transform="translate(1012,190)">
+      <rect class="pill" x="0" y="0" width="152" height="30" rx="999"/>
+      <text class="pillText" x="16" y="20">EVIDENCE</text>
+      <circle cx="128" cy="15" r="5" fill="rgba(34,197,94,0.95)">
+        <animate attributeName="r" dur="1.4s" repeatCount="indefinite" values="4;6;4"/>
+        <animate attributeName="opacity" dur="1.4s" repeatCount="indefinite" values="0.6;1;0.6"/>
+      </circle>
+    </g>
+  </g>
+</svg>
+
