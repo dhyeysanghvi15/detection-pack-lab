@@ -1,0 +1,3 @@
+{"@timestamp":"2026-01-01T00:12:10Z","EventID":4662,"SubjectUserName":"alice","Properties":"Replicating Directory Changes","ObjectName":"DC=contoso,DC=example","IpAddress":"198.51.100.9"}
+{"@timestamp":"2026-01-01T00:12:11Z","EventID":4662,"SubjectUserName":"alice","Properties":"Replicating Directory Changes All","ObjectName":"DC=contoso,DC=example","IpAddress":"198.51.100.9"}
+

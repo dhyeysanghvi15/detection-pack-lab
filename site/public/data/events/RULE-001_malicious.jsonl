@@ -1,0 +1,3 @@
+{"@timestamp":"2026-01-01T00:00:10Z","eventSource":"iam.amazonaws.com","eventName":"CreateAccessKey","userIdentity":{"type":"IAMUser","userName":"alice"},"sourceIPAddress":"198.51.100.9","requestParameters":{"userName":"alice"},"responseElements":{"accessKey":{"accessKeyId":"AKIAEXAMPLE"}}}
+{"@timestamp":"2026-01-01T00:00:11Z","eventSource":"iam.amazonaws.com","eventName":"ListUsers","userIdentity":{"type":"IAMUser","userName":"alice"},"sourceIPAddress":"198.51.100.9","responseElements":{}}
+

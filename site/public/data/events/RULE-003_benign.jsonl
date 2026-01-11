@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:02:01Z","eventSource":"signin.amazonaws.com","eventName":"ConsoleLogin","userIdentity":{"type":"IAMUser","userName":"alice"},"sourceIPAddress":"203.0.113.10","responseElements":{"ConsoleLogin":"Success"},"additionalEventData":{"MFAUsed":"Yes"}}
+{"@timestamp":"2026-01-01T00:02:02Z","eventSource":"signin.amazonaws.com","eventName":"ConsoleLogin","userIdentity":{"type":"IAMUser","userName":"alice"},"sourceIPAddress":"203.0.113.10","responseElements":{"ConsoleLogin":"Failure"},"additionalEventData":{"MFAUsed":"No"}}
+{"@timestamp":"2026-01-01T00:02:03Z","eventSource":"sts.amazonaws.com","eventName":"AssumeRole","userIdentity":{"type":"IAMUser","userName":"alice"},"sourceIPAddress":"203.0.113.10","requestParameters":{"roleArn":"arn:aws:iam::123456789012:role/ReadOnlyRole"}}
+

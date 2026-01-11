@@ -1,0 +1,3 @@
+{"@timestamp":"2026-01-01T00:08:10Z","EventID":19,"EventType":"WmiEventFilter","Operation":"Created","User":"CONTOSO\\alice","Name":"UpdaterFilter","Query":"SELECT * FROM __InstanceCreationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_Process'"}
+{"@timestamp":"2026-01-01T00:08:11Z","EventID":21,"EventType":"WmiEventConsumerToFilter","Operation":"Created","User":"CONTOSO\\alice","Consumer":"UpdaterConsumer","Filter":"UpdaterFilter"}
+

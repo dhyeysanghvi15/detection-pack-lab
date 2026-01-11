@@ -1,0 +1,23 @@
+title: Rundll32 comsvcs.dll MiniDump (LSASS Dump)
+id: RULE-012
+description: Detects rundll32 usage of comsvcs.dll MiniDump, a common LSASS dumping technique.
+author: detpack-lab
+status: stable
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    EventID: 1
+    Image|endswith: "\\rundll32.exe"
+    CommandLine|contains:
+      - comsvcs.dll
+      - MiniDump
+  condition: selection
+falsepositives:
+  - Rare; some admin tooling may use rundll32 (review)
+level: critical
+tags:
+  - attack.t1003
+  - attack.credential_access
+

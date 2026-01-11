@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:15:01Z","EventID":4624,"SubjectUserName":"alice","LogonType":2}
+{"@timestamp":"2026-01-01T00:15:02Z","EventID":4634,"SubjectUserName":"alice"}
+{"@timestamp":"2026-01-01T00:15:03Z","EventID":4672,"SubjectUserName":"admin","PrivilegeList":"SeTcbPrivilege"}
+

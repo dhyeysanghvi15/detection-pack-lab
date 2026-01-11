@@ -1,0 +1,20 @@
+title: Windows Service Installed from User-Writable Path
+id: RULE-007
+description: Detects a new Windows service installation where the binary path is in a user-writable directory.
+author: detpack-lab
+status: stable
+logsource:
+  product: windows
+  service: system
+detection:
+  selection:
+    EventID: 7045
+    ImagePath|contains: "\\Users\\"
+  condition: selection
+falsepositives:
+  - Rare; some legitimate tools may install from user space (should be reviewed)
+level: high
+tags:
+  - attack.t1543
+  - attack.persistence
+

@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:04:01Z","activityDisplayName":"Add member to role","roleName":"User Administrator","result":"success","targetResources":[{"userPrincipalName":"bob@contoso.example"}],"initiatedBy":{"user":{"userPrincipalName":"admin@contoso.example"}}}
+{"@timestamp":"2026-01-01T00:04:02Z","activityDisplayName":"Remove member from role","roleName":"Global Administrator","result":"success","targetResources":[{"userPrincipalName":"carol@contoso.example"}],"initiatedBy":{"user":{"userPrincipalName":"admin@contoso.example"}}}
+{"@timestamp":"2026-01-01T00:04:03Z","activityDisplayName":"Add member to role","roleName":"Global Administrator","result":"failure","targetResources":[{"userPrincipalName":"bob@contoso.example"}],"initiatedBy":{"user":{"userPrincipalName":"admin@contoso.example"}}}
+

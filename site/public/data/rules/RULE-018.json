@@ -1,0 +1,27 @@
+{
+  "id": "RULE-018",
+  "title": "PowerShell EncodedCommand Usage",
+  "description": "Detects PowerShell encoded command usage in script block logging.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-018-powershell-encoded-command.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-018-powershell-encoded-command.kql",
+  "sigma": "title: PowerShell EncodedCommand Usage\nid: RULE-018\ndescription: Detects PowerShell encoded command usage in script block logging.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: powershell\ndetection:\n  selection:\n    EventID: 4104\n    ScriptBlockText|contains:\n      - -enc\n      - EncodedCommand\n  condition: selection\nfalsepositives:\n  - Some admin scripts may use encoded content (rare; review)\nlevel: medium\ntags:\n  - attack.t1059\n  - attack.defense_evasion\n\n",
+  "elastic": "EventID:4104 and (ScriptBlockText:*\\\"-enc\\\"* or ScriptBlockText:*EncodedCommand*)",
+  "logsource": "windows/powershell",
+  "tags": [
+    "attack.t1059",
+    "attack.defense_evasion"
+  ],
+  "tactic": "Defense Evasion",
+  "techniques": [
+    "T1059"
+  ],
+  "severity": "medium",
+  "status": "passing",
+  "confidence": 72,
+  "noise_risk": 35,
+  "quality_score": 69,
+  "fields_used": [
+    "EventID",
+    "ScriptBlockText"
+  ]
+}

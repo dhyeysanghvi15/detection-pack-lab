@@ -1,0 +1,21 @@
+title: Entra ID Impossible Travel Risk Detected
+id: RULE-015
+description: Detects sign-in risk events where impossible travel is flagged.
+author: detpack-lab
+status: experimental
+logsource:
+  product: azure
+  service: entra_id
+detection:
+  selection:
+    activityDisplayName: Sign-in risk detected
+    riskEventTypes|contains: impossibleTravel
+    riskLevel: high
+  condition: selection
+falsepositives:
+  - VPN usage or mobile carrier IP changes
+level: medium
+tags:
+  - attack.t1078
+  - attack.initial_access
+

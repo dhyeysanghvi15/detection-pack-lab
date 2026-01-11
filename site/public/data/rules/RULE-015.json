@@ -1,0 +1,28 @@
+{
+  "id": "RULE-015",
+  "title": "Entra ID Impossible Travel Risk Detected",
+  "description": "Detects sign-in risk events where impossible travel is flagged.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-015-entra-impossible-travel-risk.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-015-entra-impossible-travel-risk.kql",
+  "sigma": "title: Entra ID Impossible Travel Risk Detected\nid: RULE-015\ndescription: Detects sign-in risk events where impossible travel is flagged.\nauthor: detpack-lab\nstatus: experimental\nlogsource:\n  product: azure\n  service: entra_id\ndetection:\n  selection:\n    activityDisplayName: Sign-in risk detected\n    riskEventTypes|contains: impossibleTravel\n    riskLevel: high\n  condition: selection\nfalsepositives:\n  - VPN usage or mobile carrier IP changes\nlevel: medium\ntags:\n  - attack.t1078\n  - attack.initial_access\n\n",
+  "elastic": "activityDisplayName:\"Sign-in risk detected\" and riskEventTypes:*impossibleTravel* and riskLevel:\"high\"",
+  "logsource": "azure/entra_id",
+  "tags": [
+    "attack.t1078",
+    "attack.initial_access"
+  ],
+  "tactic": "Initial Access",
+  "techniques": [
+    "T1078"
+  ],
+  "severity": "medium",
+  "status": "experimental",
+  "confidence": 72,
+  "noise_risk": 35,
+  "quality_score": 69,
+  "fields_used": [
+    "activityDisplayName",
+    "riskEventTypes",
+    "riskLevel"
+  ]
+}

@@ -1,0 +1,24 @@
+title: AWS IAM Attach AdministratorAccess Policy
+id: RULE-002
+description: Detects attaching the AWS managed AdministratorAccess policy to a user.
+author: detpack-lab
+status: stable
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: iam.amazonaws.com
+    eventName: AttachUserPolicy
+    requestParameters.policyArn|contains: AdministratorAccess
+  filter_known_automation:
+    userIdentity.sessionContext.sessionIssuer.userName: ApprovedAutomationRole
+  condition: selection and not filter_known_automation
+falsepositives:
+  - Intended privilege escalation by IAM administrators
+  - Approved automation roles attaching policies during provisioning
+level: critical
+tags:
+  - attack.t1098
+  - attack.privilege_escalation
+

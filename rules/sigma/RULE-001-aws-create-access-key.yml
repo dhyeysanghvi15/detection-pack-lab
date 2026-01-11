@@ -1,0 +1,20 @@
+title: AWS IAM CreateAccessKey
+id: RULE-001
+description: Detects AWS IAM access key creation, which is a common persistence mechanism after account compromise.
+author: detpack-lab
+status: stable
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: iam.amazonaws.com
+    eventName: CreateAccessKey
+  condition: selection
+falsepositives:
+  - Legitimate key rotation by approved automation roles
+level: high
+tags:
+  - attack.t1098
+  - attack.persistence
+

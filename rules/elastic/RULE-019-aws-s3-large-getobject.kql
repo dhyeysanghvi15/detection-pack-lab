@@ -1,0 +1,2 @@
+eventSource:"s3.amazonaws.com" and eventName:"GetObject" and bytesTransferredOut >= 50000000
+

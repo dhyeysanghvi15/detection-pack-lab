@@ -1,0 +1,28 @@
+{
+  "id": "RULE-004",
+  "title": "Entra ID Admin Consent Granted to Application",
+  "description": "Detects tenant-wide (AllPrincipals) consent granted to an application, a common persistence and privilege pathway.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-004-entra-admin-consent.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-004-entra-admin-consent.kql",
+  "sigma": "title: Entra ID Admin Consent Granted to Application\nid: RULE-004\ndescription: Detects tenant-wide (AllPrincipals) consent granted to an application, a common persistence and privilege pathway.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: azure\n  service: entra_id\ndetection:\n  selection:\n    activityDisplayName: Consent to application\n    consentType: AllPrincipals\n    result: success\n  condition: selection\nfalsepositives:\n  - Legitimate enterprise application onboarding\nlevel: high\ntags:\n  - attack.t1098\n  - attack.persistence\n\n",
+  "elastic": "activityDisplayName:\"Consent to application\" and consentType:\"AllPrincipals\" and result:\"success\"",
+  "logsource": "azure/entra_id",
+  "tags": [
+    "attack.t1098",
+    "attack.persistence"
+  ],
+  "tactic": "Persistence",
+  "techniques": [
+    "T1098"
+  ],
+  "severity": "high",
+  "status": "passing",
+  "confidence": 85,
+  "noise_risk": 25,
+  "quality_score": 81,
+  "fields_used": [
+    "activityDisplayName",
+    "consentType",
+    "result"
+  ]
+}

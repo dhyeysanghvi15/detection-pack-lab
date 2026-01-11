@@ -1,0 +1,19 @@
+title: PowerShell Disable Microsoft Defender
+id: RULE-017
+description: Detects PowerShell commands that disable Defender real-time monitoring.
+author: detpack-lab
+status: stable
+logsource:
+  product: windows
+  service: powershell
+detection:
+  selection:
+    EventID: 4104
+    ScriptBlockText|contains: DisableRealtimeMonitoring
+  condition: selection
+falsepositives:
+  - Approved security tooling changes (change control)
+level: high
+tags:
+  - attack.t1562
+  - attack.defense_evasion

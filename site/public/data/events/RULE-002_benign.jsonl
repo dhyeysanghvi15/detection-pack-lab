@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:01:01Z","eventSource":"iam.amazonaws.com","eventName":"AttachUserPolicy","userIdentity":{"type":"AssumedRole","sessionContext":{"sessionIssuer":{"userName":"ApprovedAutomationRole"}}},"sourceIPAddress":"203.0.113.11","requestParameters":{"userName":"svc-provisioner","policyArn":"arn:aws:iam::aws:policy/AdministratorAccess"}}
+{"@timestamp":"2026-01-01T00:01:02Z","eventSource":"iam.amazonaws.com","eventName":"AttachUserPolicy","userIdentity":{"type":"IAMUser","userName":"admin"},"sourceIPAddress":"203.0.113.12","requestParameters":{"userName":"dev-user","policyArn":"arn:aws:iam::aws:policy/ReadOnlyAccess"}}
+{"@timestamp":"2026-01-01T00:01:03Z","eventSource":"iam.amazonaws.com","eventName":"CreateUser","userIdentity":{"type":"IAMUser","userName":"admin"},"sourceIPAddress":"203.0.113.12","requestParameters":{"userName":"new-user"}}
+

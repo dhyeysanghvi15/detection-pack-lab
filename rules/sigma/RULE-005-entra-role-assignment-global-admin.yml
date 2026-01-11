@@ -1,0 +1,21 @@
+title: Entra ID Global Administrator Role Assignment
+id: RULE-005
+description: Detects a user being added to the Global Administrator role.
+author: detpack-lab
+status: stable
+logsource:
+  product: azure
+  service: entra_id
+detection:
+  selection:
+    activityDisplayName: Add member to role
+    roleName: Global Administrator
+    result: success
+  condition: selection
+falsepositives:
+  - Legitimate administrative role assignment
+level: critical
+tags:
+  - attack.t1098
+  - attack.privilege_escalation
+

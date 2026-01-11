@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:10:01Z","EventID":10,"SourceImage":"C:\\Program Files\\AV\\agent.exe","TargetImage":"C:\\Windows\\System32\\lsass.exe","GrantedAccess":"0x1410","User":"SYSTEM"}
+{"@timestamp":"2026-01-01T00:10:02Z","EventID":1,"Image":"C:\\Windows\\System32\\taskmgr.exe","CommandLine":"taskmgr.exe","User":"CONTOSO\\admin"}
+{"@timestamp":"2026-01-01T00:10:03Z","EventID":10,"SourceImage":"C:\\Windows\\System32\\svchost.exe","TargetImage":"C:\\Windows\\System32\\lsass.exe","GrantedAccess":"0x1010","User":"SYSTEM"}
+

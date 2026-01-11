@@ -1,0 +1,26 @@
+{
+  "id": "RULE-016",
+  "title": "Windows Security Event Log Cleared",
+  "description": "Detects clearing of the Windows Security event log (Event ID 1102), a common defense evasion technique.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-016-windows-eventlog-cleared.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-016-windows-eventlog-cleared.kql",
+  "sigma": "title: Windows Security Event Log Cleared\nid: RULE-016\ndescription: Detects clearing of the Windows Security event log (Event ID 1102), a common defense evasion technique.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: security\ndetection:\n  selection:\n    EventID: 1102\n  condition: selection\nfalsepositives:\n  - Rare; legitimate log maintenance (should be controlled)\nlevel: high\ntags:\n  - attack.t1070\n  - attack.defense_evasion\n\n",
+  "elastic": "EventID:1102",
+  "logsource": "windows/security",
+  "tags": [
+    "attack.t1070",
+    "attack.defense_evasion"
+  ],
+  "tactic": "Defense Evasion",
+  "techniques": [
+    "T1070"
+  ],
+  "severity": "high",
+  "status": "passing",
+  "confidence": 85,
+  "noise_risk": 25,
+  "quality_score": 81,
+  "fields_used": [
+    "EventID"
+  ]
+}

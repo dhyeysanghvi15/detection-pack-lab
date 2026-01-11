@@ -1,0 +1,1 @@
+EventID:11 and TargetFilename:*\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\* and (TargetFilename:*.lnk or TargetFilename:*.exe)

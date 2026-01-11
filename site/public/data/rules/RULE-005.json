@@ -1,0 +1,28 @@
+{
+  "id": "RULE-005",
+  "title": "Entra ID Global Administrator Role Assignment",
+  "description": "Detects a user being added to the Global Administrator role.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-005-entra-role-assignment-global-admin.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-005-entra-role-assignment-global-admin.kql",
+  "sigma": "title: Entra ID Global Administrator Role Assignment\nid: RULE-005\ndescription: Detects a user being added to the Global Administrator role.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: azure\n  service: entra_id\ndetection:\n  selection:\n    activityDisplayName: Add member to role\n    roleName: Global Administrator\n    result: success\n  condition: selection\nfalsepositives:\n  - Legitimate administrative role assignment\nlevel: critical\ntags:\n  - attack.t1098\n  - attack.privilege_escalation\n\n",
+  "elastic": "activityDisplayName:\"Add member to role\" and roleName:\"Global Administrator\" and result:\"success\"",
+  "logsource": "azure/entra_id",
+  "tags": [
+    "attack.t1098",
+    "attack.privilege_escalation"
+  ],
+  "tactic": "Privilege Escalation",
+  "techniques": [
+    "T1098"
+  ],
+  "severity": "critical",
+  "status": "passing",
+  "confidence": 93,
+  "noise_risk": 25,
+  "quality_score": 86,
+  "fields_used": [
+    "activityDisplayName",
+    "roleName",
+    "result"
+  ]
+}

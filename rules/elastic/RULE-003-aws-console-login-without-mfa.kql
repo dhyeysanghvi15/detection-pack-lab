@@ -1,0 +1,2 @@
+eventSource:"signin.amazonaws.com" and eventName:"ConsoleLogin" and responseElements.ConsoleLogin:"Success" and additionalEventData.MFAUsed:"No"
+

@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:12:10Z","EventID":4662,"SubjectUserName":"alice","Properties":"Replicating Directory Changes","IpAddress":"198.51.100.9"}
+{"@timestamp":"2026-01-01T00:15:10Z","EventID":1102,"SubjectUserName":"alice","ProcessName":"C:\\Windows\\System32\\wevtutil.exe"}
+{"@timestamp":"2026-01-01T00:07:10Z","EventID":4698,"TaskName":"\\UserTask\\OneDriveUpdate","TaskContent":"<Command>powershell.exe -WindowStyle Hidden -c ...</Command>","SubjectUserName":"alice"}
+

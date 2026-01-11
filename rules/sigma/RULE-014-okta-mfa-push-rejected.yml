@@ -1,0 +1,20 @@
+title: Okta MFA Push Rejected (Potential Push Fatigue)
+id: RULE-014
+description: Detects Okta Verify push rejections which may indicate push fatigue attempts.
+author: detpack-lab
+status: experimental
+logsource:
+  product: okta
+  service: system_log
+detection:
+  selection:
+    eventType: user.mfa.okta_verify.push_rejected
+    outcome.result: FAILURE
+  condition: selection
+falsepositives:
+  - User legitimately rejecting unexpected push prompts
+level: medium
+tags:
+  - attack.t1621
+  - attack.credential_access
+

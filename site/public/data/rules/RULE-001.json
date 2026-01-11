@@ -1,0 +1,27 @@
+{
+  "id": "RULE-001",
+  "title": "AWS IAM CreateAccessKey",
+  "description": "Detects AWS IAM access key creation, which is a common persistence mechanism after account compromise.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-001-aws-create-access-key.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-001-aws-create-access-key.kql",
+  "sigma": "title: AWS IAM CreateAccessKey\nid: RULE-001\ndescription: Detects AWS IAM access key creation, which is a common persistence mechanism after account compromise.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: iam.amazonaws.com\n    eventName: CreateAccessKey\n  condition: selection\nfalsepositives:\n  - Legitimate key rotation by approved automation roles\nlevel: high\ntags:\n  - attack.t1098\n  - attack.persistence\n\n",
+  "elastic": "eventSource:\"iam.amazonaws.com\" and eventName:\"CreateAccessKey\"",
+  "logsource": "aws/cloudtrail",
+  "tags": [
+    "attack.t1098",
+    "attack.persistence"
+  ],
+  "tactic": "Persistence",
+  "techniques": [
+    "T1098"
+  ],
+  "severity": "high",
+  "status": "passing",
+  "confidence": 85,
+  "noise_risk": 25,
+  "quality_score": 81,
+  "fields_used": [
+    "eventSource",
+    "eventName"
+  ]
+}

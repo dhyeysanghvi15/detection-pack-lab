@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:09:01Z","EventID":11,"TargetFilename":"C:\\Users\\alice\\Desktop\\note.txt","Image":"C:\\Windows\\System32\\notepad.exe","User":"CONTOSO\\alice"}
+{"@timestamp":"2026-01-01T00:09:02Z","EventID":11,"TargetFilename":"C:\\ProgramData\\Vendor\\updater.dat","Image":"C:\\Program Files\\Vendor\\updater.exe","User":"SYSTEM"}
+{"@timestamp":"2026-01-01T00:09:03Z","EventID":1,"Image":"C:\\Windows\\System32\\explorer.exe","CommandLine":"explorer.exe","User":"CONTOSO\\alice"}
+

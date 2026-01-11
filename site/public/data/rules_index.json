@@ -1,0 +1,304 @@
+{
+  "rules": [
+    {
+      "id": "RULE-001",
+      "name": "AWS IAM CreateAccessKey",
+      "description": "Detects AWS IAM access key creation, which is a common persistence mechanism after account compromise.",
+      "logsource": "aws/cloudtrail",
+      "tactic": "Persistence",
+      "techniques": [
+        "T1098"
+      ],
+      "severity": "high",
+      "status": "passing",
+      "confidence": 85,
+      "noise_risk": 25,
+      "quality_score": 81
+    },
+    {
+      "id": "RULE-002",
+      "name": "AWS IAM Attach AdministratorAccess Policy",
+      "description": "Detects attaching the AWS managed AdministratorAccess policy to a user.",
+      "logsource": "aws/cloudtrail",
+      "tactic": "Privilege Escalation",
+      "techniques": [
+        "T1098"
+      ],
+      "severity": "critical",
+      "status": "passing",
+      "confidence": 91,
+      "noise_risk": 48,
+      "quality_score": 75
+    },
+    {
+      "id": "RULE-003",
+      "name": "AWS ConsoleLogin Success Without MFA",
+      "description": "Detects a successful AWS console login where MFA was not used.",
+      "logsource": "aws/cloudtrail",
+      "tactic": "Initial Access",
+      "techniques": [
+        "T1078"
+      ],
+      "severity": "high",
+      "status": "passing",
+      "confidence": 84,
+      "noise_risk": 33,
+      "quality_score": 77
+    },
+    {
+      "id": "RULE-004",
+      "name": "Entra ID Admin Consent Granted to Application",
+      "description": "Detects tenant-wide (AllPrincipals) consent granted to an application, a common persistence and privilege pathway.",
+      "logsource": "azure/entra_id",
+      "tactic": "Persistence",
+      "techniques": [
+        "T1098"
+      ],
+      "severity": "high",
+      "status": "passing",
+      "confidence": 85,
+      "noise_risk": 25,
+      "quality_score": 81
+    },
+    {
+      "id": "RULE-005",
+      "name": "Entra ID Global Administrator Role Assignment",
+      "description": "Detects a user being added to the Global Administrator role.",
+      "logsource": "azure/entra_id",
+      "tactic": "Privilege Escalation",
+      "techniques": [
+        "T1098"
+      ],
+      "severity": "critical",
+      "status": "passing",
+      "confidence": 93,
+      "noise_risk": 25,
+      "quality_score": 86
+    },
+    {
+      "id": "RULE-006",
+      "name": "Sysmon Registry Run Key Persistence",
+      "description": "Detects modifications to common Windows Run keys used for persistence.",
+      "logsource": "windows/sysmon",
+      "tactic": "Persistence",
+      "techniques": [
+        "T1547"
+      ],
+      "severity": "high",
+      "status": "passing",
+      "confidence": 82,
+      "noise_risk": 55,
+      "quality_score": 67
+    },
+    {
+      "id": "RULE-007",
+      "name": "Windows Service Installed from User-Writable Path",
+      "description": "Detects a new Windows service installation where the binary path is in a user-writable directory.",
+      "logsource": "windows/system",
+      "tactic": "Persistence",
+      "techniques": [
+        "T1543"
+      ],
+      "severity": "high",
+      "status": "passing",
+      "confidence": 83,
+      "noise_risk": 40,
+      "quality_score": 74
+    },
+    {
+      "id": "RULE-008",
+      "name": "Windows Scheduled Task Created with Suspicious Action",
+      "description": "Detects scheduled task creation where the task action includes PowerShell, often used for persistence.",
+      "logsource": "windows/security",
+      "tactic": "Persistence",
+      "techniques": [
+        "T1053"
+      ],
+      "severity": "medium",
+      "status": "passing",
+      "confidence": 72,
+      "noise_risk": 35,
+      "quality_score": 69
+    },
+    {
+      "id": "RULE-009",
+      "name": "Sysmon WMI Event Subscription Created",
+      "description": "Detects creation of WMI event subscriptions (EventID 19/20/21), commonly used for stealthy persistence.",
+      "logsource": "windows/sysmon",
+      "tactic": "Persistence",
+      "techniques": [
+        "T1546"
+      ],
+      "severity": "high",
+      "status": "passing",
+      "confidence": 85,
+      "noise_risk": 25,
+      "quality_score": 81
+    },
+    {
+      "id": "RULE-010",
+      "name": "Sysmon Startup Folder Drop",
+      "description": "Detects creation of executables or shortcuts in the Windows Startup folder.",
+      "logsource": "windows/sysmon",
+      "tactic": "Persistence",
+      "techniques": [
+        "T1547"
+      ],
+      "severity": "medium",
+      "status": "passing",
+      "confidence": 72,
+      "noise_risk": 35,
+      "quality_score": 69
+    },
+    {
+      "id": "RULE-011",
+      "name": "Sysmon LSASS Access (Potential Credential Dumping)",
+      "description": "Detects process access to lsass.exe with high privileges, often associated with credential dumping.",
+      "logsource": "windows/sysmon",
+      "tactic": "Credential Access",
+      "techniques": [
+        "T1003"
+      ],
+      "severity": "critical",
+      "status": "passing",
+      "confidence": 91,
+      "noise_risk": 40,
+      "quality_score": 79
+    },
+    {
+      "id": "RULE-012",
+      "name": "Rundll32 comsvcs.dll MiniDump (LSASS Dump)",
+      "description": "Detects rundll32 usage of comsvcs.dll MiniDump, a common LSASS dumping technique.",
+      "logsource": "windows/sysmon",
+      "tactic": "Credential Access",
+      "techniques": [
+        "T1003"
+      ],
+      "severity": "critical",
+      "status": "passing",
+      "confidence": 91,
+      "noise_risk": 40,
+      "quality_score": 79
+    },
+    {
+      "id": "RULE-013",
+      "name": "Windows DCSync-Like Directory Replication Access",
+      "description": "Detects directory replication access often associated with DCSync (e.g., Replicating Directory Changes).",
+      "logsource": "windows/security",
+      "tactic": "Credential Access",
+      "techniques": [
+        "T1003"
+      ],
+      "severity": "critical",
+      "status": "passing",
+      "confidence": 91,
+      "noise_risk": 40,
+      "quality_score": 79
+    },
+    {
+      "id": "RULE-014",
+      "name": "Okta MFA Push Rejected (Potential Push Fatigue)",
+      "description": "Detects Okta Verify push rejections which may indicate push fatigue attempts.",
+      "logsource": "okta/system_log",
+      "tactic": "Credential Access",
+      "techniques": [
+        "T1621"
+      ],
+      "severity": "medium",
+      "status": "experimental",
+      "confidence": 73,
+      "noise_risk": 20,
+      "quality_score": 76
+    },
+    {
+      "id": "RULE-015",
+      "name": "Entra ID Impossible Travel Risk Detected",
+      "description": "Detects sign-in risk events where impossible travel is flagged.",
+      "logsource": "azure/entra_id",
+      "tactic": "Initial Access",
+      "techniques": [
+        "T1078"
+      ],
+      "severity": "medium",
+      "status": "experimental",
+      "confidence": 72,
+      "noise_risk": 35,
+      "quality_score": 69
+    },
+    {
+      "id": "RULE-016",
+      "name": "Windows Security Event Log Cleared",
+      "description": "Detects clearing of the Windows Security event log (Event ID 1102), a common defense evasion technique.",
+      "logsource": "windows/security",
+      "tactic": "Defense Evasion",
+      "techniques": [
+        "T1070"
+      ],
+      "severity": "high",
+      "status": "passing",
+      "confidence": 85,
+      "noise_risk": 25,
+      "quality_score": 81
+    },
+    {
+      "id": "RULE-017",
+      "name": "PowerShell Disable Microsoft Defender",
+      "description": "Detects PowerShell commands that disable Defender real-time monitoring.",
+      "logsource": "windows/powershell",
+      "tactic": "Defense Evasion",
+      "techniques": [
+        "T1562"
+      ],
+      "severity": "high",
+      "status": "passing",
+      "confidence": 83,
+      "noise_risk": 40,
+      "quality_score": 74
+    },
+    {
+      "id": "RULE-018",
+      "name": "PowerShell EncodedCommand Usage",
+      "description": "Detects PowerShell encoded command usage in script block logging.",
+      "logsource": "windows/powershell",
+      "tactic": "Defense Evasion",
+      "techniques": [
+        "T1059"
+      ],
+      "severity": "medium",
+      "status": "passing",
+      "confidence": 72,
+      "noise_risk": 35,
+      "quality_score": 69
+    },
+    {
+      "id": "RULE-019",
+      "name": "AWS S3 Large GetObject Download",
+      "description": "Detects S3 GetObject events with unusually large outbound bytes (simple exfil indicator).",
+      "logsource": "aws/cloudtrail",
+      "tactic": "Exfiltration",
+      "techniques": [
+        "T1567"
+      ],
+      "severity": "medium",
+      "status": "experimental",
+      "confidence": 73,
+      "noise_risk": 20,
+      "quality_score": 76
+    },
+    {
+      "id": "RULE-020",
+      "name": "Sysmon DNS Query for Suspicious TLD (.zip)",
+      "description": "Detects DNS queries for the .zip TLD which can be used for phishing and malware distribution.",
+      "logsource": "windows/sysmon",
+      "tactic": "Initial Access",
+      "techniques": [
+        "T1566"
+      ],
+      "severity": "low",
+      "status": "experimental",
+      "confidence": 58,
+      "noise_risk": 20,
+      "quality_score": 67
+    }
+  ]
+}

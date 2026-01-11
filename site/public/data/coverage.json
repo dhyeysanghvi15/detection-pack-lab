@@ -1,0 +1,188 @@
+{
+  "tactics": [
+    "Persistence",
+    "Privilege Escalation",
+    "Initial Access",
+    "Credential Access",
+    "Defense Evasion",
+    "Exfiltration"
+  ],
+  "techniques": [
+    {
+      "technique": "T1003",
+      "name": "OS Credential Dumping",
+      "tactic": "Credential Access",
+      "rules": [
+        "RULE-011",
+        "RULE-012",
+        "RULE-013"
+      ],
+      "status_breakdown": {
+        "passing": 3,
+        "failing": 0,
+        "experimental": 0
+      }
+    },
+    {
+      "technique": "T1053",
+      "name": "Scheduled Task/Job",
+      "tactic": "Persistence",
+      "rules": [
+        "RULE-008"
+      ],
+      "status_breakdown": {
+        "passing": 1,
+        "failing": 0,
+        "experimental": 0
+      }
+    },
+    {
+      "technique": "T1059",
+      "name": "Command and Scripting Interpreter",
+      "tactic": "Defense Evasion",
+      "rules": [
+        "RULE-018"
+      ],
+      "status_breakdown": {
+        "passing": 1,
+        "failing": 0,
+        "experimental": 0
+      }
+    },
+    {
+      "technique": "T1070",
+      "name": "Indicator Removal",
+      "tactic": "Defense Evasion",
+      "rules": [
+        "RULE-016"
+      ],
+      "status_breakdown": {
+        "passing": 1,
+        "failing": 0,
+        "experimental": 0
+      }
+    },
+    {
+      "technique": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Initial Access",
+      "rules": [
+        "RULE-003",
+        "RULE-015"
+      ],
+      "status_breakdown": {
+        "passing": 1,
+        "failing": 0,
+        "experimental": 1
+      }
+    },
+    {
+      "technique": "T1098",
+      "name": "Account Manipulation",
+      "tactic": "Persistence",
+      "rules": [
+        "RULE-001",
+        "RULE-002",
+        "RULE-004",
+        "RULE-005"
+      ],
+      "status_breakdown": {
+        "passing": 4,
+        "failing": 0,
+        "experimental": 0
+      }
+    },
+    {
+      "technique": "T1543",
+      "name": "Create or Modify System Process",
+      "tactic": "Persistence",
+      "rules": [
+        "RULE-007"
+      ],
+      "status_breakdown": {
+        "passing": 1,
+        "failing": 0,
+        "experimental": 0
+      }
+    },
+    {
+      "technique": "T1546",
+      "name": "Event Triggered Execution",
+      "tactic": "Persistence",
+      "rules": [
+        "RULE-009"
+      ],
+      "status_breakdown": {
+        "passing": 1,
+        "failing": 0,
+        "experimental": 0
+      }
+    },
+    {
+      "technique": "T1547",
+      "name": "Boot or Logon Autostart Execution",
+      "tactic": "Persistence",
+      "rules": [
+        "RULE-006",
+        "RULE-010"
+      ],
+      "status_breakdown": {
+        "passing": 2,
+        "failing": 0,
+        "experimental": 0
+      }
+    },
+    {
+      "technique": "T1562",
+      "name": "Impair Defenses",
+      "tactic": "Defense Evasion",
+      "rules": [
+        "RULE-017"
+      ],
+      "status_breakdown": {
+        "passing": 1,
+        "failing": 0,
+        "experimental": 0
+      }
+    },
+    {
+      "technique": "T1566",
+      "name": "Phishing",
+      "tactic": "Initial Access",
+      "rules": [
+        "RULE-020"
+      ],
+      "status_breakdown": {
+        "passing": 0,
+        "failing": 0,
+        "experimental": 1
+      }
+    },
+    {
+      "technique": "T1567",
+      "name": "Exfiltration Over Web Service",
+      "tactic": "Exfiltration",
+      "rules": [
+        "RULE-019"
+      ],
+      "status_breakdown": {
+        "passing": 0,
+        "failing": 0,
+        "experimental": 1
+      }
+    },
+    {
+      "technique": "T1621",
+      "name": "Multi-Factor Authentication Request Generation",
+      "tactic": "Credential Access",
+      "rules": [
+        "RULE-014"
+      ],
+      "status_breakdown": {
+        "passing": 0,
+        "failing": 0,
+        "experimental": 1
+      }
+    }
+  ]
+}

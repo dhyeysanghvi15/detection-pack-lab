@@ -1,0 +1,3 @@
+{"@timestamp":"2026-01-01T00:14:10Z","activityDisplayName":"Sign-in risk detected","riskEventTypes":"impossibleTravel","riskLevel":"high","userPrincipalName":"alice@contoso.example","ipAddress":"198.51.100.9"}
+{"@timestamp":"2026-01-01T00:14:11Z","activityDisplayName":"Sign-in risk detected","riskEventTypes":"impossibleTravel;anomalousToken","riskLevel":"high","userPrincipalName":"alice@contoso.example","ipAddress":"198.51.100.10"}
+

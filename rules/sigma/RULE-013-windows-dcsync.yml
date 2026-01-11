@@ -1,0 +1,22 @@
+title: Windows DCSync-Like Directory Replication Access
+id: RULE-013
+description: Detects directory replication access often associated with DCSync (e.g., Replicating Directory Changes).
+author: detpack-lab
+status: stable
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4662
+    Properties|contains: Replicating Directory Changes
+  filter_machine_account:
+    SubjectUserName|endswith: "$"
+  condition: selection and not filter_machine_account
+falsepositives:
+  - Domain controller operations and legitimate replication tooling
+level: critical
+tags:
+  - attack.t1003
+  - attack.credential_access
+

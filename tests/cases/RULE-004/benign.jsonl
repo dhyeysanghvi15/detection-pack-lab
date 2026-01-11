@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:03:01Z","activityDisplayName":"Consent to application","consentType":"Principal","result":"success","appDisplayName":"Salesforce","initiatedBy":{"user":{"userPrincipalName":"admin@contoso.example"}}}
+{"@timestamp":"2026-01-01T00:03:02Z","activityDisplayName":"Add service principal","result":"success","appDisplayName":"ExampleApp","initiatedBy":{"user":{"userPrincipalName":"admin@contoso.example"}}}
+{"@timestamp":"2026-01-01T00:03:03Z","activityDisplayName":"Consent to application","consentType":"AllPrincipals","result":"failure","appDisplayName":"ExampleApp","initiatedBy":{"user":{"userPrincipalName":"admin@contoso.example"}}}
+

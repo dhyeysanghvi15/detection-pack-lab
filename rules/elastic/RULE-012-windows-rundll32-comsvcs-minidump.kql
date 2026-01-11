@@ -1,0 +1,2 @@
+EventID:1 and Image:*\\\\rundll32.exe and (CommandLine:*comsvcs.dll* and CommandLine:*MiniDump*)
+

@@ -1,0 +1,29 @@
+{
+  "id": "RULE-003",
+  "title": "AWS ConsoleLogin Success Without MFA",
+  "description": "Detects a successful AWS console login where MFA was not used.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-003-aws-console-login-without-mfa.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-003-aws-console-login-without-mfa.kql",
+  "sigma": "title: AWS ConsoleLogin Success Without MFA\nid: RULE-003\ndescription: Detects a successful AWS console login where MFA was not used.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: signin.amazonaws.com\n    eventName: ConsoleLogin\n    responseElements.ConsoleLogin: Success\n    additionalEventData.MFAUsed: \"No\"\n  condition: selection\nfalsepositives:\n  - Accounts that are legitimately exempt from MFA (should be rare)\nlevel: high\ntags:\n  - attack.t1078\n  - attack.initial_access\n\n",
+  "elastic": "eventSource:\"signin.amazonaws.com\" and eventName:\"ConsoleLogin\" and responseElements.ConsoleLogin:\"Success\" and additionalEventData.MFAUsed:\"No\"",
+  "logsource": "aws/cloudtrail",
+  "tags": [
+    "attack.t1078",
+    "attack.initial_access"
+  ],
+  "tactic": "Initial Access",
+  "techniques": [
+    "T1078"
+  ],
+  "severity": "high",
+  "status": "passing",
+  "confidence": 84,
+  "noise_risk": 33,
+  "quality_score": 77,
+  "fields_used": [
+    "eventSource",
+    "eventName",
+    "responseElements.ConsoleLogin",
+    "additionalEventData.MFAUsed"
+  ]
+}

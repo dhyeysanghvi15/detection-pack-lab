@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:18:01Z","eventSource":"s3.amazonaws.com","eventName":"GetObject","userIdentity":{"type":"IAMUser","userName":"alice"},"sourceIPAddress":"203.0.113.10","bucketName":"public-assets","objectKey":"logo.png","bytesTransferredOut":120000}
+{"@timestamp":"2026-01-01T00:18:02Z","eventSource":"s3.amazonaws.com","eventName":"PutObject","userIdentity":{"type":"IAMUser","userName":"alice"},"sourceIPAddress":"203.0.113.10","bucketName":"public-assets","objectKey":"logo.png","bytesTransferredOut":0}
+{"@timestamp":"2026-01-01T00:18:03Z","eventSource":"s3.amazonaws.com","eventName":"GetObject","userIdentity":{"type":"IAMUser","userName":"alice"},"sourceIPAddress":"203.0.113.10","bucketName":"public-assets","objectKey":"readme.txt","bytesTransferredOut":8000}
+

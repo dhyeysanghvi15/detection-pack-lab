@@ -1,0 +1,2 @@
+EventID:10 and TargetImage:*\\\\lsass.exe and GrantedAccess:*0x1fffff*
+

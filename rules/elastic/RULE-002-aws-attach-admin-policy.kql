@@ -1,0 +1,2 @@
+eventSource:"iam.amazonaws.com" and eventName:"AttachUserPolicy" and requestParameters.policyArn:*AdministratorAccess* and not userIdentity.sessionContext.sessionIssuer.userName:"ApprovedAutomationRole"
+

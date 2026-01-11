@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:19:01Z","EventID":22,"QueryName":"example.com","Image":"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe","User":"CONTOSO\\alice"}
+{"@timestamp":"2026-01-01T00:19:02Z","EventID":22,"QueryName":"updates.vendor.example","Image":"C:\\Program Files\\Vendor\\updater.exe","User":"SYSTEM"}
+{"@timestamp":"2026-01-01T00:19:03Z","EventID":3,"DestinationIp":"1.1.1.1","DestinationPort":53,"Image":"C:\\Windows\\System32\\svchost.exe","User":"SYSTEM"}
+

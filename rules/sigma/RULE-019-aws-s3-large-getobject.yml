@@ -1,0 +1,21 @@
+title: AWS S3 Large GetObject Download
+id: RULE-019
+description: Detects S3 GetObject events with unusually large outbound bytes (simple exfil indicator).
+author: detpack-lab
+status: experimental
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: s3.amazonaws.com
+    eventName: GetObject
+    bytesTransferredOut|gte: 50000000
+  condition: selection
+falsepositives:
+  - Legitimate large downloads (backup/restore, data science workloads)
+level: medium
+tags:
+  - attack.t1567
+  - attack.exfiltration
+

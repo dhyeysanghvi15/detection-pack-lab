@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:08:01Z","EventID":1,"Image":"C:\\Windows\\System32\\wbem\\wmiprvse.exe","CommandLine":"wmiprvse.exe","User":"SYSTEM"}
+{"@timestamp":"2026-01-01T00:08:02Z","EventID":3,"Image":"C:\\Windows\\System32\\svchost.exe","DestinationIp":"10.0.0.5","DestinationPort":5985,"User":"SYSTEM"}
+{"@timestamp":"2026-01-01T00:08:03Z","EventID":11,"TargetFilename":"C:\\Windows\\Temp\\foo.tmp","Image":"C:\\Windows\\System32\\cmd.exe","User":"CONTOSO\\admin"}
+

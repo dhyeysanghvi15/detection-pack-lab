@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:00:10Z","eventSource":"iam.amazonaws.com","eventName":"CreateAccessKey","userIdentity":{"type":"IAMUser","userName":"alice"},"sourceIPAddress":"198.51.100.9"}
+{"@timestamp":"2026-01-01T00:02:10Z","eventSource":"signin.amazonaws.com","eventName":"ConsoleLogin","responseElements":{"ConsoleLogin":"Success"},"additionalEventData":{"MFAUsed":"No"},"sourceIPAddress":"198.51.100.9"}
+{"@timestamp":"2026-01-01T00:18:10Z","eventSource":"s3.amazonaws.com","eventName":"GetObject","bytesTransferredOut":75000000,"bucketName":"finance","objectKey":"exports/2026-01-01.csv"}
+

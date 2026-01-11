@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:14:01Z","activityDisplayName":"Sign-in risk detected","riskEventTypes":"unfamiliarFeatures","riskLevel":"medium","userPrincipalName":"alice@contoso.example"}
+{"@timestamp":"2026-01-01T00:14:02Z","activityDisplayName":"User logged in","result":"success","userPrincipalName":"alice@contoso.example"}
+{"@timestamp":"2026-01-01T00:14:03Z","activityDisplayName":"Sign-in risk detected","riskEventTypes":"impossibleTravel","riskLevel":"low","userPrincipalName":"alice@contoso.example"}
+

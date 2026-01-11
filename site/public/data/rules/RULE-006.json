@@ -1,0 +1,28 @@
+{
+  "id": "RULE-006",
+  "title": "Sysmon Registry Run Key Persistence",
+  "description": "Detects modifications to common Windows Run keys used for persistence.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-006-sysmon-run-key-persistence.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-006-sysmon-run-key-persistence.kql",
+  "sigma": "title: Sysmon Registry Run Key Persistence\nid: RULE-006\ndescription: Detects modifications to common Windows Run keys used for persistence.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID: 13\n    TargetObject|contains: \"\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\"\n    Details|contains: \"\\\\AppData\\\\\"\n  condition: selection\nfalsepositives:\n  - Legitimate software installation or updates\nlevel: high\ntags:\n  - attack.t1547\n  - attack.persistence\n",
+  "elastic": "EventID:13 and TargetObject:*\\\\\\\\Software\\\\\\\\Microsoft\\\\\\\\Windows\\\\\\\\CurrentVersion\\\\\\\\Run* and Details:*\\\\\\\\AppData\\\\\\\\*",
+  "logsource": "windows/sysmon",
+  "tags": [
+    "attack.t1547",
+    "attack.persistence"
+  ],
+  "tactic": "Persistence",
+  "techniques": [
+    "T1547"
+  ],
+  "severity": "high",
+  "status": "passing",
+  "confidence": 82,
+  "noise_risk": 55,
+  "quality_score": 67,
+  "fields_used": [
+    "EventID",
+    "TargetObject",
+    "Details"
+  ]
+}

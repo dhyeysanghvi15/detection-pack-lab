@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:11:01Z","EventID":1,"Image":"C:\\Windows\\System32\\rundll32.exe","CommandLine":"rundll32.exe shell32.dll,Control_RunDLL","User":"CONTOSO\\alice"}
+{"@timestamp":"2026-01-01T00:11:02Z","EventID":1,"Image":"C:\\Windows\\System32\\cmd.exe","CommandLine":"cmd.exe /c dir","User":"CONTOSO\\alice"}
+{"@timestamp":"2026-01-01T00:11:03Z","EventID":1,"Image":"C:\\Windows\\System32\\rundll32.exe","CommandLine":"rundll32.exe printui.dll,PrintUIEntry /in /n \\\\PRINTSRV\\Q","User":"CONTOSO\\admin"}
+

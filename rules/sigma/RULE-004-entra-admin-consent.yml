@@ -1,0 +1,21 @@
+title: Entra ID Admin Consent Granted to Application
+id: RULE-004
+description: Detects tenant-wide (AllPrincipals) consent granted to an application, a common persistence and privilege pathway.
+author: detpack-lab
+status: stable
+logsource:
+  product: azure
+  service: entra_id
+detection:
+  selection:
+    activityDisplayName: Consent to application
+    consentType: AllPrincipals
+    result: success
+  condition: selection
+falsepositives:
+  - Legitimate enterprise application onboarding
+level: high
+tags:
+  - attack.t1098
+  - attack.persistence
+

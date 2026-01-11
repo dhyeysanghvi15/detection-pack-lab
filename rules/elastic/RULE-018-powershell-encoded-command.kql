@@ -1,0 +1,2 @@
+EventID:4104 and (ScriptBlockText:*\"-enc\"* or ScriptBlockText:*EncodedCommand*)
+

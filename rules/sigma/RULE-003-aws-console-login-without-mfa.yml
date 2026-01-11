@@ -1,0 +1,22 @@
+title: AWS ConsoleLogin Success Without MFA
+id: RULE-003
+description: Detects a successful AWS console login where MFA was not used.
+author: detpack-lab
+status: stable
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: signin.amazonaws.com
+    eventName: ConsoleLogin
+    responseElements.ConsoleLogin: Success
+    additionalEventData.MFAUsed: "No"
+  condition: selection
+falsepositives:
+  - Accounts that are legitimately exempt from MFA (should be rare)
+level: high
+tags:
+  - attack.t1078
+  - attack.initial_access
+

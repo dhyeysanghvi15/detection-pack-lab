@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:00:01Z","eventSource":"iam.amazonaws.com","eventName":"ListAccessKeys","userIdentity":{"type":"IAMUser","userName":"alice"},"sourceIPAddress":"203.0.113.10","responseElements":{}}
+{"@timestamp":"2026-01-01T00:00:02Z","eventSource":"iam.amazonaws.com","eventName":"GetUser","userIdentity":{"type":"IAMUser","userName":"alice"},"sourceIPAddress":"203.0.113.10","responseElements":{}}
+{"@timestamp":"2026-01-01T00:00:03Z","eventSource":"sts.amazonaws.com","eventName":"GetCallerIdentity","userIdentity":{"type":"AssumedRole","sessionContext":{"sessionIssuer":{"userName":"ApprovedAutomationRole"}}},"sourceIPAddress":"203.0.113.11","responseElements":{}}
+

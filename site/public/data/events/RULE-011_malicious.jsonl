@@ -1,0 +1,3 @@
+{"@timestamp":"2026-01-01T00:10:10Z","EventID":10,"SourceImage":"C:\\Users\\alice\\AppData\\Local\\Temp\\mimikatz.exe","TargetImage":"C:\\Windows\\System32\\lsass.exe","GrantedAccess":"0x1fffff","User":"CONTOSO\\alice"}
+{"@timestamp":"2026-01-01T00:10:11Z","EventID":1,"Image":"C:\\Users\\alice\\AppData\\Local\\Temp\\mimikatz.exe","CommandLine":"mimikatz.exe sekurlsa::logonpasswords","User":"CONTOSO\\alice"}
+

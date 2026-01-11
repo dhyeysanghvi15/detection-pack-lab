@@ -1,0 +1,27 @@
+{
+  "id": "RULE-014",
+  "title": "Okta MFA Push Rejected (Potential Push Fatigue)",
+  "description": "Detects Okta Verify push rejections which may indicate push fatigue attempts.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-014-okta-mfa-push-rejected.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-014-okta-mfa-push-rejected.kql",
+  "sigma": "title: Okta MFA Push Rejected (Potential Push Fatigue)\nid: RULE-014\ndescription: Detects Okta Verify push rejections which may indicate push fatigue attempts.\nauthor: detpack-lab\nstatus: experimental\nlogsource:\n  product: okta\n  service: system_log\ndetection:\n  selection:\n    eventType: user.mfa.okta_verify.push_rejected\n    outcome.result: FAILURE\n  condition: selection\nfalsepositives:\n  - User legitimately rejecting unexpected push prompts\nlevel: medium\ntags:\n  - attack.t1621\n  - attack.credential_access\n\n",
+  "elastic": "eventType:\"user.mfa.okta_verify.push_rejected\" and outcome.result:\"FAILURE\"",
+  "logsource": "okta/system_log",
+  "tags": [
+    "attack.t1621",
+    "attack.credential_access"
+  ],
+  "tactic": "Credential Access",
+  "techniques": [
+    "T1621"
+  ],
+  "severity": "medium",
+  "status": "experimental",
+  "confidence": 73,
+  "noise_risk": 20,
+  "quality_score": 76,
+  "fields_used": [
+    "eventType",
+    "outcome.result"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "RULE-011",
+  "title": "Sysmon LSASS Access (Potential Credential Dumping)",
+  "description": "Detects process access to lsass.exe with high privileges, often associated with credential dumping.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-011-sysmon-lsass-access.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-011-sysmon-lsass-access.kql",
+  "sigma": "title: Sysmon LSASS Access (Potential Credential Dumping)\nid: RULE-011\ndescription: Detects process access to lsass.exe with high privileges, often associated with credential dumping.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID: 10\n    TargetImage|endswith: \"\\\\lsass.exe\"\n    GrantedAccess|contains: \"0x1fffff\"\n  condition: selection\nfalsepositives:\n  - Security products inspecting LSASS (allowlist required)\nlevel: critical\ntags:\n  - attack.t1003\n  - attack.credential_access\n\n",
+  "elastic": "EventID:10 and TargetImage:*\\\\\\\\lsass.exe and GrantedAccess:*0x1fffff*",
+  "logsource": "windows/sysmon",
+  "tags": [
+    "attack.t1003",
+    "attack.credential_access"
+  ],
+  "tactic": "Credential Access",
+  "techniques": [
+    "T1003"
+  ],
+  "severity": "critical",
+  "status": "passing",
+  "confidence": 91,
+  "noise_risk": 40,
+  "quality_score": 79,
+  "fields_used": [
+    "EventID",
+    "TargetImage",
+    "GrantedAccess"
+  ]
+}

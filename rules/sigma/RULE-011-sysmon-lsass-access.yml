@@ -1,0 +1,21 @@
+title: Sysmon LSASS Access (Potential Credential Dumping)
+id: RULE-011
+description: Detects process access to lsass.exe with high privileges, often associated with credential dumping.
+author: detpack-lab
+status: stable
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    EventID: 10
+    TargetImage|endswith: "\\lsass.exe"
+    GrantedAccess|contains: "0x1fffff"
+  condition: selection
+falsepositives:
+  - Security products inspecting LSASS (allowlist required)
+level: critical
+tags:
+  - attack.t1003
+  - attack.credential_access
+

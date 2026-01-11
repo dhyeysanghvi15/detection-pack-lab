@@ -1,0 +1,23 @@
+title: Sysmon Startup Folder Drop
+id: RULE-010
+description: Detects creation of executables or shortcuts in the Windows Startup folder.
+author: detpack-lab
+status: stable
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    EventID: 11
+    TargetFilename|contains: "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\"
+    TargetFilename|endswith:
+      - .lnk
+      - .exe
+  condition: selection
+falsepositives:
+  - Legitimate software creating startup entries
+level: medium
+tags:
+  - attack.t1547
+  - attack.persistence
+

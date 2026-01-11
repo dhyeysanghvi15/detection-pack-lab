@@ -1,0 +1,22 @@
+title: Windows Scheduled Task Created with Suspicious Action
+id: RULE-008
+description: Detects scheduled task creation where the task action includes PowerShell, often used for persistence.
+author: detpack-lab
+status: stable
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4698
+    TaskContent|contains:
+      - powershell
+      - PowerShell
+  condition: selection
+falsepositives:
+  - Legitimate admin automation using scheduled tasks
+level: medium
+tags:
+  - attack.t1053
+  - attack.persistence
+

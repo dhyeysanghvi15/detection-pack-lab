@@ -1,0 +1,26 @@
+{
+  "id": "RULE-009",
+  "title": "Sysmon WMI Event Subscription Created",
+  "description": "Detects creation of WMI event subscriptions (EventID 19/20/21), commonly used for stealthy persistence.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-009-sysmon-wmi-event-subscription.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-009-sysmon-wmi-event-subscription.kql",
+  "sigma": "title: Sysmon WMI Event Subscription Created\nid: RULE-009\ndescription: Detects creation of WMI event subscriptions (EventID 19/20/21), commonly used for stealthy persistence.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID:\n      - 19\n      - 20\n      - 21\n  condition: selection\nfalsepositives:\n  - Legitimate management tooling using permanent WMI subscriptions\nlevel: high\ntags:\n  - attack.t1546\n  - attack.persistence\n\n",
+  "elastic": "(EventID:19 or EventID:20 or EventID:21)",
+  "logsource": "windows/sysmon",
+  "tags": [
+    "attack.t1546",
+    "attack.persistence"
+  ],
+  "tactic": "Persistence",
+  "techniques": [
+    "T1546"
+  ],
+  "severity": "high",
+  "status": "passing",
+  "confidence": 85,
+  "noise_risk": 25,
+  "quality_score": 81,
+  "fields_used": [
+    "EventID"
+  ]
+}

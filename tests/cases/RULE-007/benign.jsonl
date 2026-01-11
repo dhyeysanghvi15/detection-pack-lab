@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:06:01Z","EventID":7045,"ServiceName":"VendorUpdater","ImagePath":"C:\\Program Files\\Vendor\\updater.exe","AccountName":"LocalSystem"}
+{"@timestamp":"2026-01-01T00:06:02Z","EventID":7036,"ServiceName":"Spooler","State":"running"}
+{"@timestamp":"2026-01-01T00:06:03Z","EventID":7045,"ServiceName":"CorpAgent","ImagePath":"C:\\Program Files\\Corp\\agent.exe","AccountName":"LocalSystem"}
+

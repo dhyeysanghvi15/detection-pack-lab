@@ -1,0 +1,3 @@
+{"@timestamp":"2026-01-01T00:04:10Z","activityDisplayName":"Add member to role","roleName":"Global Administrator","result":"success","targetResources":[{"userPrincipalName":"alice@contoso.example"}],"initiatedBy":{"user":{"userPrincipalName":"alice@contoso.example"}}}
+{"@timestamp":"2026-01-01T00:04:11Z","activityDisplayName":"Update user","result":"success","targetResources":[{"userPrincipalName":"alice@contoso.example"}],"initiatedBy":{"user":{"userPrincipalName":"alice@contoso.example"}}}
+

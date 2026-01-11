@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:10:10Z","EventID":10,"SourceImage":"C:\\Users\\alice\\AppData\\Local\\Temp\\mimikatz.exe","TargetImage":"C:\\Windows\\System32\\lsass.exe","GrantedAccess":"0x1fffff","User":"CONTOSO\\alice"}
+{"@timestamp":"2026-01-01T00:09:10Z","EventID":11,"TargetFilename":"C:\\Users\\alice\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\OneDriveUpdate.exe","Image":"C:\\Windows\\System32\\cmd.exe","User":"CONTOSO\\alice"}
+{"@timestamp":"2026-01-01T00:19:10Z","EventID":22,"QueryName":"invoice-jan2026.zip","Image":"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe","User":"CONTOSO\\alice"}
+

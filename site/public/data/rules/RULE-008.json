@@ -1,0 +1,27 @@
+{
+  "id": "RULE-008",
+  "title": "Windows Scheduled Task Created with Suspicious Action",
+  "description": "Detects scheduled task creation where the task action includes PowerShell, often used for persistence.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-008-windows-scheduled-task-created.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-008-windows-scheduled-task-created.kql",
+  "sigma": "title: Windows Scheduled Task Created with Suspicious Action\nid: RULE-008\ndescription: Detects scheduled task creation where the task action includes PowerShell, often used for persistence.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: security\ndetection:\n  selection:\n    EventID: 4698\n    TaskContent|contains:\n      - powershell\n      - PowerShell\n  condition: selection\nfalsepositives:\n  - Legitimate admin automation using scheduled tasks\nlevel: medium\ntags:\n  - attack.t1053\n  - attack.persistence\n\n",
+  "elastic": "EventID:4698 and (TaskContent:*powershell* or TaskContent:*PowerShell*)",
+  "logsource": "windows/security",
+  "tags": [
+    "attack.t1053",
+    "attack.persistence"
+  ],
+  "tactic": "Persistence",
+  "techniques": [
+    "T1053"
+  ],
+  "severity": "medium",
+  "status": "passing",
+  "confidence": 72,
+  "noise_risk": 35,
+  "quality_score": 69,
+  "fields_used": [
+    "EventID",
+    "TaskContent"
+  ]
+}

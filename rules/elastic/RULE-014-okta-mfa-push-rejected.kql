@@ -1,0 +1,2 @@
+eventType:"user.mfa.okta_verify.push_rejected" and outcome.result:"FAILURE"
+

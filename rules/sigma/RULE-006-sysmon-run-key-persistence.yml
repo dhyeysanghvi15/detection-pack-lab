@@ -1,0 +1,20 @@
+title: Sysmon Registry Run Key Persistence
+id: RULE-006
+description: Detects modifications to common Windows Run keys used for persistence.
+author: detpack-lab
+status: stable
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    EventID: 13
+    TargetObject|contains: "\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+    Details|contains: "\\AppData\\"
+  condition: selection
+falsepositives:
+  - Legitimate software installation or updates
+level: high
+tags:
+  - attack.t1547
+  - attack.persistence

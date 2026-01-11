@@ -1,0 +1,22 @@
+title: PowerShell EncodedCommand Usage
+id: RULE-018
+description: Detects PowerShell encoded command usage in script block logging.
+author: detpack-lab
+status: stable
+logsource:
+  product: windows
+  service: powershell
+detection:
+  selection:
+    EventID: 4104
+    ScriptBlockText|contains:
+      - -enc
+      - EncodedCommand
+  condition: selection
+falsepositives:
+  - Some admin scripts may use encoded content (rare; review)
+level: medium
+tags:
+  - attack.t1059
+  - attack.defense_evasion
+

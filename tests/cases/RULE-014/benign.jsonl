@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:13:01Z","eventType":"user.mfa.okta_verify.push_sent","outcome":{"result":"SUCCESS"},"actor":{"alternateId":"alice@contoso.example"},"client":{"ipAddress":"203.0.113.10"}}
+{"@timestamp":"2026-01-01T00:13:02Z","eventType":"user.authentication.sso","outcome":{"result":"SUCCESS"},"actor":{"alternateId":"alice@contoso.example"},"client":{"ipAddress":"203.0.113.10"}}
+{"@timestamp":"2026-01-01T00:13:03Z","eventType":"user.mfa.okta_verify.push_rejected","outcome":{"result":"SUCCESS"},"actor":{"alternateId":"alice@contoso.example"},"client":{"ipAddress":"203.0.113.10"}}
+

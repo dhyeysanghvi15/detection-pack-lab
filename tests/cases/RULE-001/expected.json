@@ -1,0 +1,6 @@
+{
+  "rule_id": "RULE-001",
+  "benign": { "expected_alerts": 0 },
+  "malicious": { "expected_alerts": 1 }
+}
+

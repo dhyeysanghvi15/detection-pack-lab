@@ -1,0 +1,3 @@
+{"@timestamp":"2026-01-01T00:11:10Z","EventID":1,"Image":"C:\\Windows\\System32\\rundll32.exe","CommandLine":"rundll32.exe C:\\Windows\\System32\\comsvcs.dll, MiniDump 632 C:\\Users\\alice\\AppData\\Local\\Temp\\lsass.dmp full","User":"CONTOSO\\alice"}
+{"@timestamp":"2026-01-01T00:11:11Z","EventID":11,"TargetFilename":"C:\\Users\\alice\\AppData\\Local\\Temp\\lsass.dmp","Image":"C:\\Windows\\System32\\rundll32.exe","User":"CONTOSO\\alice"}
+

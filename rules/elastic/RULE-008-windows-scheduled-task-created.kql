@@ -1,0 +1,2 @@
+EventID:4698 and (TaskContent:*powershell* or TaskContent:*PowerShell*)
+

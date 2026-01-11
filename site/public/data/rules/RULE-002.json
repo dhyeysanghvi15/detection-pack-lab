@@ -1,0 +1,29 @@
+{
+  "id": "RULE-002",
+  "title": "AWS IAM Attach AdministratorAccess Policy",
+  "description": "Detects attaching the AWS managed AdministratorAccess policy to a user.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-002-aws-attach-admin-policy.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-002-aws-attach-admin-policy.kql",
+  "sigma": "title: AWS IAM Attach AdministratorAccess Policy\nid: RULE-002\ndescription: Detects attaching the AWS managed AdministratorAccess policy to a user.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: iam.amazonaws.com\n    eventName: AttachUserPolicy\n    requestParameters.policyArn|contains: AdministratorAccess\n  filter_known_automation:\n    userIdentity.sessionContext.sessionIssuer.userName: ApprovedAutomationRole\n  condition: selection and not filter_known_automation\nfalsepositives:\n  - Intended privilege escalation by IAM administrators\n  - Approved automation roles attaching policies during provisioning\nlevel: critical\ntags:\n  - attack.t1098\n  - attack.privilege_escalation\n\n",
+  "elastic": "eventSource:\"iam.amazonaws.com\" and eventName:\"AttachUserPolicy\" and requestParameters.policyArn:*AdministratorAccess* and not userIdentity.sessionContext.sessionIssuer.userName:\"ApprovedAutomationRole\"",
+  "logsource": "aws/cloudtrail",
+  "tags": [
+    "attack.t1098",
+    "attack.privilege_escalation"
+  ],
+  "tactic": "Privilege Escalation",
+  "techniques": [
+    "T1098"
+  ],
+  "severity": "critical",
+  "status": "passing",
+  "confidence": 91,
+  "noise_risk": 48,
+  "quality_score": 75,
+  "fields_used": [
+    "eventSource",
+    "eventName",
+    "requestParameters.policyArn",
+    "userIdentity.sessionContext.sessionIssuer.userName"
+  ]
+}

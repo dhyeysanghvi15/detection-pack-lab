@@ -1,0 +1,27 @@
+{
+  "id": "RULE-007",
+  "title": "Windows Service Installed from User-Writable Path",
+  "description": "Detects a new Windows service installation where the binary path is in a user-writable directory.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-007-windows-service-installed-suspicious-path.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-007-windows-service-installed-suspicious-path.kql",
+  "sigma": "title: Windows Service Installed from User-Writable Path\nid: RULE-007\ndescription: Detects a new Windows service installation where the binary path is in a user-writable directory.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: system\ndetection:\n  selection:\n    EventID: 7045\n    ImagePath|contains: \"\\\\Users\\\\\"\n  condition: selection\nfalsepositives:\n  - Rare; some legitimate tools may install from user space (should be reviewed)\nlevel: high\ntags:\n  - attack.t1543\n  - attack.persistence\n\n",
+  "elastic": "EventID:7045 and ImagePath:*\\\\\\\\Users\\\\\\\\*",
+  "logsource": "windows/system",
+  "tags": [
+    "attack.t1543",
+    "attack.persistence"
+  ],
+  "tactic": "Persistence",
+  "techniques": [
+    "T1543"
+  ],
+  "severity": "high",
+  "status": "passing",
+  "confidence": 83,
+  "noise_risk": 40,
+  "quality_score": 74,
+  "fields_used": [
+    "EventID",
+    "ImagePath"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "RULE-010",
+  "title": "Sysmon Startup Folder Drop",
+  "description": "Detects creation of executables or shortcuts in the Windows Startup folder.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-010-sysmon-startup-folder-drop.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-010-sysmon-startup-folder-drop.kql",
+  "sigma": "title: Sysmon Startup Folder Drop\nid: RULE-010\ndescription: Detects creation of executables or shortcuts in the Windows Startup folder.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID: 11\n    TargetFilename|contains: \"\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\\"\n    TargetFilename|endswith:\n      - .lnk\n      - .exe\n  condition: selection\nfalsepositives:\n  - Legitimate software creating startup entries\nlevel: medium\ntags:\n  - attack.t1547\n  - attack.persistence\n\n",
+  "elastic": "EventID:11 and TargetFilename:*\\\\\\\\Microsoft\\\\\\\\Windows\\\\\\\\Start Menu\\\\\\\\Programs\\\\\\\\Startup\\\\\\\\* and (TargetFilename:*.lnk or TargetFilename:*.exe)",
+  "logsource": "windows/sysmon",
+  "tags": [
+    "attack.t1547",
+    "attack.persistence"
+  ],
+  "tactic": "Persistence",
+  "techniques": [
+    "T1547"
+  ],
+  "severity": "medium",
+  "status": "passing",
+  "confidence": 72,
+  "noise_risk": 35,
+  "quality_score": 69,
+  "fields_used": [
+    "EventID",
+    "TargetFilename"
+  ]
+}

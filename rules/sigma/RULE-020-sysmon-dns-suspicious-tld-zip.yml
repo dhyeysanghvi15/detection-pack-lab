@@ -1,0 +1,20 @@
+title: Sysmon DNS Query for Suspicious TLD (.zip)
+id: RULE-020
+description: Detects DNS queries for the .zip TLD which can be used for phishing and malware distribution.
+author: detpack-lab
+status: experimental
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    EventID: 22
+    QueryName|endswith: ".zip"
+  condition: selection
+falsepositives:
+  - Legitimate use of .zip domains (rare; review)
+level: low
+tags:
+  - attack.t1566
+  - attack.initial_access
+

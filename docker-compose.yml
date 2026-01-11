@@ -1,0 +1,29 @@
+services:
+  harness:
+    build:
+      context: .
+      dockerfile: harness/Dockerfile
+    working_dir: /repo
+    volumes:
+      - ./:/repo
+    command: ["python", "harness/run.py", "test"]
+
+  artifacts:
+    build:
+      context: .
+      dockerfile: harness/Dockerfile
+    working_dir: /repo
+    volumes:
+      - ./:/repo
+    command: ["python", "harness/run.py", "artifacts"]
+
+  site:
+    image: node:20-alpine
+    working_dir: /site
+    volumes:
+      - ./site:/site
+    ports:
+      - "3000:80"
+    depends_on:
+      - artifacts
+    command: ["sh", "-lc", "npm ci && npm run dev -- -p 80 -H 0.0.0.0"]

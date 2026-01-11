@@ -1,0 +1,28 @@
+{
+  "id": "RULE-013",
+  "title": "Windows DCSync-Like Directory Replication Access",
+  "description": "Detects directory replication access often associated with DCSync (e.g., Replicating Directory Changes).",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-013-windows-dcsync.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-013-windows-dcsync.kql",
+  "sigma": "title: Windows DCSync-Like Directory Replication Access\nid: RULE-013\ndescription: Detects directory replication access often associated with DCSync (e.g., Replicating Directory Changes).\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: security\ndetection:\n  selection:\n    EventID: 4662\n    Properties|contains: Replicating Directory Changes\n  filter_machine_account:\n    SubjectUserName|endswith: \"$\"\n  condition: selection and not filter_machine_account\nfalsepositives:\n  - Domain controller operations and legitimate replication tooling\nlevel: critical\ntags:\n  - attack.t1003\n  - attack.credential_access\n\n",
+  "elastic": "EventID:4662 and Properties:*Replicating Directory Changes* and not SubjectUserName:*$",
+  "logsource": "windows/security",
+  "tags": [
+    "attack.t1003",
+    "attack.credential_access"
+  ],
+  "tactic": "Credential Access",
+  "techniques": [
+    "T1003"
+  ],
+  "severity": "critical",
+  "status": "passing",
+  "confidence": 91,
+  "noise_risk": 40,
+  "quality_score": 79,
+  "fields_used": [
+    "EventID",
+    "Properties",
+    "SubjectUserName"
+  ]
+}
