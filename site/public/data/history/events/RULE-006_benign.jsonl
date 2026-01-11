@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:05:01Z","EventID":13,"TargetObject":"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run","Details":"\"C:\\Program Files\\Vendor\\Updater.exe\"","Image":"C:\\Windows\\System32\\msiexec.exe","User":"CONTOSO\\admin"}
+{"@timestamp":"2026-01-01T00:05:02Z","EventID":13,"TargetObject":"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce","Details":"\"C:\\Program Files\\Vendor\\Installer.exe\"","Image":"C:\\Windows\\System32\\msiexec.exe","User":"CONTOSO\\admin"}
+{"@timestamp":"2026-01-01T00:05:03Z","EventID":1,"Image":"C:\\Windows\\System32\\notepad.exe","CommandLine":"notepad.exe","User":"CONTOSO\\alice"}
+

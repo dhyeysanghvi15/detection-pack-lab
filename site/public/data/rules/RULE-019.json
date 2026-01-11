@@ -1,11 +1,14 @@
 {
   "id": "RULE-019",
+  "name": "AWS S3 Large GetObject Download",
   "title": "AWS S3 Large GetObject Download",
   "description": "Detects S3 GetObject events with unusually large outbound bytes (simple exfil indicator).",
-  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-019-aws-s3-large-getobject.yml",
-  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-019-aws-s3-large-getobject.kql",
-  "sigma": "title: AWS S3 Large GetObject Download\nid: RULE-019\ndescription: Detects S3 GetObject events with unusually large outbound bytes (simple exfil indicator).\nauthor: detpack-lab\nstatus: experimental\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: s3.amazonaws.com\n    eventName: GetObject\n    bytesTransferredOut|gte: 50000000\n  condition: selection\nfalsepositives:\n  - Legitimate large downloads (backup/restore, data science workloads)\nlevel: medium\ntags:\n  - attack.t1567\n  - attack.exfiltration\n\n",
-  "elastic": "eventSource:\"s3.amazonaws.com\" and eventName:\"GetObject\" and bytesTransferredOut >= 50000000",
+  "sigma_path": "/repo/rules/sigma/RULE-019-aws-s3-large-getobject.yml",
+  "elastic_path": "/repo/rules/elastic/RULE-019-aws-s3-large-getobject.kql",
+  "sigma_text": "title: AWS S3 Large GetObject Download\nid: RULE-019\ndescription: Detects S3 GetObject events with unusually large outbound bytes (simple exfil indicator).\nauthor: detpack-lab\nstatus: experimental\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: s3.amazonaws.com\n    eventName: GetObject\n    bytesTransferredOut|gte: 50000000\n  condition: selection\nfalsepositives:\n  - Legitimate large downloads (backup/restore, data science workloads)\nlevel: medium\ntags:\n  - attack.t1567\n  - attack.exfiltration\n\n",
+  "elastic_text": "eventSource:\"s3.amazonaws.com\" and eventName:\"GetObject\" and bytesTransferredOut >= 50000000",
+  "elastic_kql": "eventSource:\"s3.amazonaws.com\" and eventName:\"GetObject\" and bytesTransferredOut >= 50000000",
+  "elastic_esql": "FROM logs | WHERE eventSource:\"s3.amazonaws.com\" and eventName:\"GetObject\" and bytesTransferredOut >= 50000000",
   "logsource": "aws/cloudtrail",
   "tags": [
     "attack.t1567",
@@ -24,5 +27,116 @@
     "eventSource",
     "eventName",
     "bytesTransferredOut"
-  ]
+  ],
+  "false_positive_notes": [
+    "Legitimate large downloads (backup/restore, data science workloads)"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.ip_ranges",
+      "description": "Exclude trusted corporate egress ranges to reduce noise.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "medium",
+    "fields_used": [
+      "eventSource",
+      "eventName",
+      "bytesTransferredOut"
+    ],
+    "contains_or_regex_clauses": 0,
+    "has_false_positive_notes": true,
+    "status": "experimental"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "eventSource",
+          "op": "eq",
+          "values": [
+            "s3.amazonaws.com"
+          ]
+        },
+        {
+          "field": "eventName",
+          "op": "eq",
+          "values": [
+            "GetObject"
+          ]
+        },
+        {
+          "field": "bytesTransferredOut",
+          "op": "gte",
+          "values": [
+            50000000
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "eventSource",
+              "value": "s3.amazonaws.com"
+            },
+            {
+              "field": "eventName",
+              "value": "GetObject"
+            }
+          ],
+          "failed_clause": "bytesTransferredOut gte [50000000]",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 1,
+        "actual_alerts": 1,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "eventSource",
+              "value": "s3.amazonaws.com"
+            },
+            {
+              "field": "eventName",
+              "value": "GetObject"
+            },
+            {
+              "field": "bytesTransferredOut",
+              "value": "75000000"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 1,
+      "alerts_actual": 1
+    }
+  }
 }

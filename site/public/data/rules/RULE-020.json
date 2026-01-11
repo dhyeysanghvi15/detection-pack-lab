@@ -1,11 +1,14 @@
 {
   "id": "RULE-020",
+  "name": "Sysmon DNS Query for Suspicious TLD (.zip)",
   "title": "Sysmon DNS Query for Suspicious TLD (.zip)",
   "description": "Detects DNS queries for the .zip TLD which can be used for phishing and malware distribution.",
-  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-020-sysmon-dns-suspicious-tld-zip.yml",
-  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-020-sysmon-dns-suspicious-tld-zip.kql",
-  "sigma": "title: Sysmon DNS Query for Suspicious TLD (.zip)\nid: RULE-020\ndescription: Detects DNS queries for the .zip TLD which can be used for phishing and malware distribution.\nauthor: detpack-lab\nstatus: experimental\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID: 22\n    QueryName|endswith: \".zip\"\n  condition: selection\nfalsepositives:\n  - Legitimate use of .zip domains (rare; review)\nlevel: low\ntags:\n  - attack.t1566\n  - attack.initial_access\n\n",
-  "elastic": "EventID:22 and QueryName:*.zip",
+  "sigma_path": "/repo/rules/sigma/RULE-020-sysmon-dns-suspicious-tld-zip.yml",
+  "elastic_path": "/repo/rules/elastic/RULE-020-sysmon-dns-suspicious-tld-zip.kql",
+  "sigma_text": "title: Sysmon DNS Query for Suspicious TLD (.zip)\nid: RULE-020\ndescription: Detects DNS queries for the .zip TLD which can be used for phishing and malware distribution.\nauthor: detpack-lab\nstatus: experimental\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID: 22\n    QueryName|endswith: \".zip\"\n  condition: selection\nfalsepositives:\n  - Legitimate use of .zip domains (rare; review)\nlevel: low\ntags:\n  - attack.t1566\n  - attack.initial_access\n\n",
+  "elastic_text": "EventID:22 and QueryName:*.zip",
+  "elastic_kql": "EventID:22 and QueryName:*.zip",
+  "elastic_esql": "FROM logs | WHERE EventID:22 and QueryName:*.zip",
   "logsource": "windows/sysmon",
   "tags": [
     "attack.t1566",
@@ -23,5 +26,100 @@
   "fields_used": [
     "EventID",
     "QueryName"
-  ]
+  ],
+  "false_positive_notes": [
+    "Legitimate use of .zip domains (rare; review)"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.hosts",
+      "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "low",
+    "fields_used": [
+      "EventID",
+      "QueryName"
+    ],
+    "contains_or_regex_clauses": 0,
+    "has_false_positive_notes": true,
+    "status": "experimental"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "EventID",
+          "op": "eq",
+          "values": [
+            22
+          ]
+        },
+        {
+          "field": "QueryName",
+          "op": "endswith",
+          "values": [
+            ".zip"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "22"
+            }
+          ],
+          "failed_clause": "QueryName endswith ['.zip']",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 2,
+        "actual_alerts": 2,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "22"
+            },
+            {
+              "field": "QueryName",
+              "value": "login-security.zip"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 2,
+      "alerts_actual": 2
+    }
+  }
 }

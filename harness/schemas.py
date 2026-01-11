@@ -230,6 +230,73 @@ SCHEMAS = SchemaBundle(
 )
 
 
+RULE_DETAIL_SCHEMA: Dict[str, Any] = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "id",
+        "sigma_text",
+        "elastic_text",
+        "tuning_knobs",
+        "false_positive_notes",
+        "score_breakdown",
+        "compiled",
+        "validation",
+    ],
+    "additionalProperties": True,
+    "properties": {
+        "id": {"type": "string"},
+        "sigma_text": {"type": "string"},
+        "elastic_text": {"type": "string"},
+        "tuning_knobs": {"type": "array"},
+        "false_positive_notes": {"type": "array"},
+        "score_breakdown": {"type": "object"},
+        "compiled": {
+            "type": "object",
+            "required": ["condition", "selections"],
+            "additionalProperties": False,
+            "properties": {
+                "condition": {"type": "string"},
+                "selections": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": ["field", "op", "values"],
+                            "additionalProperties": False,
+                            "properties": {
+                                "field": {"type": "string"},
+                                "op": {
+                                    "type": "string",
+                                    "enum": [
+                                        "eq",
+                                        "contains",
+                                        "startswith",
+                                        "endswith",
+                                        "re",
+                                        "gt",
+                                        "gte",
+                                        "lt",
+                                        "lte",
+                                    ],
+                                },
+                                "values": {"type": "array"},
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "validation": {
+            "type": "object",
+            "required": ["tests"],
+            "additionalProperties": True,
+            "properties": {"tests": {"type": "array"}},
+        },
+    },
+}
+
+
 def validate_json(instance: Any, schema: Dict[str, Any]) -> None:
     Draft202012Validator(schema).validate(instance)
-

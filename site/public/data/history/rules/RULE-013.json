@@ -1,0 +1,136 @@
+{
+  "id": "RULE-013",
+  "name": "Windows DCSync-Like Directory Replication Access",
+  "title": "Windows DCSync-Like Directory Replication Access",
+  "description": "Detects directory replication access often associated with DCSync (e.g., Replicating Directory Changes).",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-013-windows-dcsync.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-013-windows-dcsync.kql",
+  "sigma_text": "title: Windows DCSync-Like Directory Replication Access\nid: RULE-013\ndescription: Detects directory replication access often associated with DCSync (e.g., Replicating Directory Changes).\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: security\ndetection:\n  selection:\n    EventID: 4662\n    Properties|contains: Replicating Directory Changes\n  filter_machine_account:\n    SubjectUserName|endswith: \"$\"\n  condition: selection and not filter_machine_account\nfalsepositives:\n  - Domain controller operations and legitimate replication tooling\nlevel: critical\ntags:\n  - attack.t1003\n  - attack.credential_access\n\n",
+  "elastic_text": "EventID:4662 and Properties:*Replicating Directory Changes* and not SubjectUserName:*$",
+  "elastic_kql": "EventID:4662 and Properties:*Replicating Directory Changes* and not SubjectUserName:*$",
+  "elastic_esql": "FROM logs | WHERE EventID:4662 and Properties:*Replicating Directory Changes* and not SubjectUserName:*$",
+  "logsource": "windows/security",
+  "tags": [
+    "attack.t1003",
+    "attack.credential_access"
+  ],
+  "tactic": "Credential Access",
+  "techniques": [
+    "T1003"
+  ],
+  "severity": "critical",
+  "status": "failing",
+  "confidence": 91,
+  "noise_risk": 40,
+  "quality_score": 79,
+  "fields_used": [
+    "EventID",
+    "Properties",
+    "SubjectUserName"
+  ],
+  "false_positive_notes": [
+    "Domain controller operations and legitimate replication tooling"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.hosts",
+      "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": false,
+    "severity": "critical",
+    "fields_used": [
+      "EventID",
+      "Properties",
+      "SubjectUserName"
+    ],
+    "contains_or_regex_clauses": 1,
+    "has_false_positive_notes": true,
+    "status": "stable"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "EventID",
+          "op": "eq",
+          "values": [
+            4662
+          ]
+        },
+        {
+          "field": "Properties",
+          "op": "contains",
+          "values": [
+            "Replicating Directory Changes"
+          ]
+        }
+      ],
+      "filter_machine_account": [
+        {
+          "field": "SubjectUserName",
+          "op": "endswith",
+          "values": [
+            "$"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 1,
+        "time_to_detect_ms": 0,
+        "passed": false,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "history",
+              "value": "simulated regression"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 2,
+        "actual_alerts": 2,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "4662"
+            },
+            {
+              "field": "Properties",
+              "value": "Replicating Directory Changes All"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 2,
+      "alerts_actual": 2
+    }
+  }
+}

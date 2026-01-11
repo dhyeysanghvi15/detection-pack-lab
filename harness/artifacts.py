@@ -10,8 +10,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import yaml
 
-from harness.evaluate import MatchWhy, evaluate_sigma_event
-from harness.schemas import SCHEMAS, validate_json
+from harness.evaluate import MatchWhy, _parse_field_key, evaluate_sigma_event
+from harness.schemas import RULE_DETAIL_SCHEMA, SCHEMAS, validate_json
 from harness.sigma_to_elastic import convert_sigma_to_kql
 
 
@@ -179,6 +179,44 @@ def _tuning_knobs(sigma: Dict[str, Any]) -> List[Dict[str, Any]]:
             }
         )
     return knobs
+
+
+def _score_breakdown(sigma: Dict[str, Any], passed: bool) -> Dict[str, Any]:
+    level = _severity_from_level(sigma.get("level", "medium"))
+    detection = sigma.get("detection") or {}
+    fields = _fields_used(sigma)
+    contains_ops = 0
+    for name, body in detection.items():
+        if name == "condition" or not isinstance(body, dict):
+            continue
+        for raw_key in body.keys():
+            if "|contains" in str(raw_key) or "|re" in str(raw_key):
+                contains_ops += 1
+    return {
+        "passed": passed,
+        "severity": level,
+        "fields_used": fields,
+        "contains_or_regex_clauses": contains_ops,
+        "has_false_positive_notes": bool(sigma.get("falsepositives")),
+        "status": str(sigma.get("status", "")),
+    }
+
+
+def _compile_sigma_for_client(sigma: Dict[str, Any]) -> Dict[str, Any]:
+    detection = sigma.get("detection") or {}
+    condition = str(detection.get("condition", "selection")).strip()
+    compiled: Dict[str, Any] = {"condition": condition, "selections": {}}
+
+    for name, body in detection.items():
+        if name == "condition" or not isinstance(body, dict):
+            continue
+        clauses: List[Dict[str, Any]] = []
+        for raw_key, raw_val in body.items():
+            field, op = _parse_field_key(str(raw_key))
+            values = raw_val if isinstance(raw_val, list) else [raw_val]
+            clauses.append({"field": field, "op": op, "values": values})
+        compiled["selections"][name] = clauses
+    return compiled
 
 
 def run_rule_case(rule: RuleFile, case_name: str, events: List[Dict[str, Any]], expected_alerts: int) -> Dict[str, Any]:
@@ -361,14 +399,19 @@ def generate_artifacts(repo_root: Path, out_dir: Path, only_rule: Optional[str] 
         else:
             elastic_text, _ = convert_sigma_to_kql(rule.sigma)
 
-        detail = {
+        compiled = _compile_sigma_for_client(rule.sigma)
+        score_breakdown = _score_breakdown(rule.sigma, passed=passed)
+        detail: Dict[str, Any] = {
             "id": rid,
+            "name": str(rule.sigma.get("title", "")),
             "title": str(rule.sigma.get("title", "")),
             "description": str(rule.sigma.get("description", "")),
             "sigma_path": str(rule.sigma_path.as_posix()),
             "elastic_path": str(rule.elastic_path.as_posix()),
-            "sigma": sigma_text,
-            "elastic": elastic_text,
+            "sigma_text": sigma_text,
+            "elastic_text": elastic_text,
+            "elastic_kql": elastic_text,
+            "elastic_esql": f"FROM logs | WHERE {elastic_text}",
             "logsource": _logsource_string(rule.sigma),
             "tags": tags,
             "tactic": tactic,
@@ -379,7 +422,19 @@ def generate_artifacts(repo_root: Path, out_dir: Path, only_rule: Optional[str] 
             "noise_risk": noise_risk,
             "quality_score": quality_score,
             "fields_used": _fields_used(rule.sigma),
+            "false_positive_notes": list(rule.sigma.get("falsepositives") or []),
+            "tuning_knobs": _tuning_knobs(rule.sigma),
+            "score_breakdown": score_breakdown,
+            "compiled": compiled,
+            "validation": {
+                "tests": results["by_rule"][rid]["tests"],
+                "summary": {
+                    "alerts_expected": sum(t["expected_alerts"] for t in results["by_rule"][rid]["tests"]),
+                    "alerts_actual": sum(t["actual_alerts"] for t in results["by_rule"][rid]["tests"]),
+                },
+            },
         }
+        validate_json(detail, RULE_DETAIL_SCHEMA)
         (out_dir / "rules" / f"{rid}.json").write_text(json.dumps(detail, indent=2), encoding="utf-8")
 
         case_dir = repo_root / "tests" / "cases" / rid

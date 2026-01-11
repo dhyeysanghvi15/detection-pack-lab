@@ -1,0 +1,3 @@
+{"@timestamp":"2026-01-01T00:19:10Z","EventID":22,"QueryName":"invoice-jan2026.zip","Image":"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe","User":"CONTOSO\\alice"}
+{"@timestamp":"2026-01-01T00:19:11Z","EventID":22,"QueryName":"login-security.zip","Image":"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe","User":"CONTOSO\\alice"}
+

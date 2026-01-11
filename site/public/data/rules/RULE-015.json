@@ -1,11 +1,14 @@
 {
   "id": "RULE-015",
+  "name": "Entra ID Impossible Travel Risk Detected",
   "title": "Entra ID Impossible Travel Risk Detected",
   "description": "Detects sign-in risk events where impossible travel is flagged.",
-  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-015-entra-impossible-travel-risk.yml",
-  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-015-entra-impossible-travel-risk.kql",
-  "sigma": "title: Entra ID Impossible Travel Risk Detected\nid: RULE-015\ndescription: Detects sign-in risk events where impossible travel is flagged.\nauthor: detpack-lab\nstatus: experimental\nlogsource:\n  product: azure\n  service: entra_id\ndetection:\n  selection:\n    activityDisplayName: Sign-in risk detected\n    riskEventTypes|contains: impossibleTravel\n    riskLevel: high\n  condition: selection\nfalsepositives:\n  - VPN usage or mobile carrier IP changes\nlevel: medium\ntags:\n  - attack.t1078\n  - attack.initial_access\n\n",
-  "elastic": "activityDisplayName:\"Sign-in risk detected\" and riskEventTypes:*impossibleTravel* and riskLevel:\"high\"",
+  "sigma_path": "/repo/rules/sigma/RULE-015-entra-impossible-travel-risk.yml",
+  "elastic_path": "/repo/rules/elastic/RULE-015-entra-impossible-travel-risk.kql",
+  "sigma_text": "title: Entra ID Impossible Travel Risk Detected\nid: RULE-015\ndescription: Detects sign-in risk events where impossible travel is flagged.\nauthor: detpack-lab\nstatus: experimental\nlogsource:\n  product: azure\n  service: entra_id\ndetection:\n  selection:\n    activityDisplayName: Sign-in risk detected\n    riskEventTypes|contains: impossibleTravel\n    riskLevel: high\n  condition: selection\nfalsepositives:\n  - VPN usage or mobile carrier IP changes\nlevel: medium\ntags:\n  - attack.t1078\n  - attack.initial_access\n\n",
+  "elastic_text": "activityDisplayName:\"Sign-in risk detected\" and riskEventTypes:*impossibleTravel* and riskLevel:\"high\"",
+  "elastic_kql": "activityDisplayName:\"Sign-in risk detected\" and riskEventTypes:*impossibleTravel* and riskLevel:\"high\"",
+  "elastic_esql": "FROM logs | WHERE activityDisplayName:\"Sign-in risk detected\" and riskEventTypes:*impossibleTravel* and riskLevel:\"high\"",
   "logsource": "azure/entra_id",
   "tags": [
     "attack.t1078",
@@ -24,5 +27,112 @@
     "activityDisplayName",
     "riskEventTypes",
     "riskLevel"
-  ]
+  ],
+  "false_positive_notes": [
+    "VPN usage or mobile carrier IP changes"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.ip_ranges",
+      "description": "Exclude trusted corporate egress ranges to reduce noise.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "medium",
+    "fields_used": [
+      "activityDisplayName",
+      "riskEventTypes",
+      "riskLevel"
+    ],
+    "contains_or_regex_clauses": 1,
+    "has_false_positive_notes": true,
+    "status": "experimental"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "activityDisplayName",
+          "op": "eq",
+          "values": [
+            "Sign-in risk detected"
+          ]
+        },
+        {
+          "field": "riskEventTypes",
+          "op": "contains",
+          "values": [
+            "impossibleTravel"
+          ]
+        },
+        {
+          "field": "riskLevel",
+          "op": "eq",
+          "values": [
+            "high"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "activityDisplayName",
+              "value": "Sign-in risk detected"
+            }
+          ],
+          "failed_clause": "riskEventTypes contains ['impossibleTravel']",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 2,
+        "actual_alerts": 2,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "activityDisplayName",
+              "value": "Sign-in risk detected"
+            },
+            {
+              "field": "riskEventTypes",
+              "value": "impossibleTravel;anomalousToken"
+            },
+            {
+              "field": "riskLevel",
+              "value": "high"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 2,
+      "alerts_actual": 2
+    }
+  }
 }

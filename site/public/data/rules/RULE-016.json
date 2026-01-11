@@ -1,11 +1,14 @@
 {
   "id": "RULE-016",
+  "name": "Windows Security Event Log Cleared",
   "title": "Windows Security Event Log Cleared",
   "description": "Detects clearing of the Windows Security event log (Event ID 1102), a common defense evasion technique.",
-  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-016-windows-eventlog-cleared.yml",
-  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-016-windows-eventlog-cleared.kql",
-  "sigma": "title: Windows Security Event Log Cleared\nid: RULE-016\ndescription: Detects clearing of the Windows Security event log (Event ID 1102), a common defense evasion technique.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: security\ndetection:\n  selection:\n    EventID: 1102\n  condition: selection\nfalsepositives:\n  - Rare; legitimate log maintenance (should be controlled)\nlevel: high\ntags:\n  - attack.t1070\n  - attack.defense_evasion\n\n",
-  "elastic": "EventID:1102",
+  "sigma_path": "/repo/rules/sigma/RULE-016-windows-eventlog-cleared.yml",
+  "elastic_path": "/repo/rules/elastic/RULE-016-windows-eventlog-cleared.kql",
+  "sigma_text": "title: Windows Security Event Log Cleared\nid: RULE-016\ndescription: Detects clearing of the Windows Security event log (Event ID 1102), a common defense evasion technique.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: security\ndetection:\n  selection:\n    EventID: 1102\n  condition: selection\nfalsepositives:\n  - Rare; legitimate log maintenance (should be controlled)\nlevel: high\ntags:\n  - attack.t1070\n  - attack.defense_evasion\n\n",
+  "elastic_text": "EventID:1102",
+  "elastic_kql": "EventID:1102",
+  "elastic_esql": "FROM logs | WHERE EventID:1102",
   "logsource": "windows/security",
   "tags": [
     "attack.t1070",
@@ -22,5 +25,83 @@
   "quality_score": 81,
   "fields_used": [
     "EventID"
-  ]
+  ],
+  "false_positive_notes": [
+    "Rare; legitimate log maintenance (should be controlled)"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.hosts",
+      "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "high",
+    "fields_used": [
+      "EventID"
+    ],
+    "contains_or_regex_clauses": 0,
+    "has_false_positive_notes": true,
+    "status": "stable"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "EventID",
+          "op": "eq",
+          "values": [
+            1102
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [],
+          "failed_clause": "EventID eq [1102]",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 1,
+        "actual_alerts": 1,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "1102"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 1,
+      "alerts_actual": 1
+    }
+  }
 }

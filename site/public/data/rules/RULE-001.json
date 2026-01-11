@@ -1,11 +1,14 @@
 {
   "id": "RULE-001",
+  "name": "AWS IAM CreateAccessKey",
   "title": "AWS IAM CreateAccessKey",
   "description": "Detects AWS IAM access key creation, which is a common persistence mechanism after account compromise.",
-  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-001-aws-create-access-key.yml",
-  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-001-aws-create-access-key.kql",
-  "sigma": "title: AWS IAM CreateAccessKey\nid: RULE-001\ndescription: Detects AWS IAM access key creation, which is a common persistence mechanism after account compromise.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: iam.amazonaws.com\n    eventName: CreateAccessKey\n  condition: selection\nfalsepositives:\n  - Legitimate key rotation by approved automation roles\nlevel: high\ntags:\n  - attack.t1098\n  - attack.persistence\n\n",
-  "elastic": "eventSource:\"iam.amazonaws.com\" and eventName:\"CreateAccessKey\"",
+  "sigma_path": "/repo/rules/sigma/RULE-001-aws-create-access-key.yml",
+  "elastic_path": "/repo/rules/elastic/RULE-001-aws-create-access-key.kql",
+  "sigma_text": "title: AWS IAM CreateAccessKey\nid: RULE-001\ndescription: Detects AWS IAM access key creation, which is a common persistence mechanism after account compromise.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: iam.amazonaws.com\n    eventName: CreateAccessKey\n  condition: selection\nfalsepositives:\n  - Legitimate key rotation by approved automation roles\nlevel: high\ntags:\n  - attack.t1098\n  - attack.persistence\n\n",
+  "elastic_text": "eventSource:\"iam.amazonaws.com\" and eventName:\"CreateAccessKey\"",
+  "elastic_kql": "eventSource:\"iam.amazonaws.com\" and eventName:\"CreateAccessKey\"",
+  "elastic_esql": "FROM logs | WHERE eventSource:\"iam.amazonaws.com\" and eventName:\"CreateAccessKey\"",
   "logsource": "aws/cloudtrail",
   "tags": [
     "attack.t1098",
@@ -23,5 +26,100 @@
   "fields_used": [
     "eventSource",
     "eventName"
-  ]
+  ],
+  "false_positive_notes": [
+    "Legitimate key rotation by approved automation roles"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.ip_ranges",
+      "description": "Exclude trusted corporate egress ranges to reduce noise.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "high",
+    "fields_used": [
+      "eventSource",
+      "eventName"
+    ],
+    "contains_or_regex_clauses": 0,
+    "has_false_positive_notes": true,
+    "status": "stable"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "eventSource",
+          "op": "eq",
+          "values": [
+            "iam.amazonaws.com"
+          ]
+        },
+        {
+          "field": "eventName",
+          "op": "eq",
+          "values": [
+            "CreateAccessKey"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "eventSource",
+              "value": "iam.amazonaws.com"
+            }
+          ],
+          "failed_clause": "eventName eq ['CreateAccessKey']",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 1,
+        "actual_alerts": 1,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "eventSource",
+              "value": "iam.amazonaws.com"
+            },
+            {
+              "field": "eventName",
+              "value": "CreateAccessKey"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 1,
+      "alerts_actual": 1
+    }
+  }
 }

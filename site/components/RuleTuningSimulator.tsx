@@ -1,44 +1,78 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import type { Results } from "../lib/types";
+import { useEffect, useMemo, useState } from "react";
+
+import type { RuleDetail, Results } from "../lib/types";
+import { evaluateCompiledRule } from "../lib/eval";
+import { PROFILES, type EnvironmentProfile, isSuppressedByProfile } from "../lib/profiles";
+import ProfileSelector from "./ProfileSelector";
 
 export default function RuleTuningSimulator({
   ruleId,
   results,
+  rule,
 }: {
   ruleId: string;
   results: Results;
+  rule: RuleDetail;
 }) {
-  const knobs = results.by_rule[ruleId]?.tuning_knobs ?? [];
-  const [aggressiveness, setAggressiveness] = useState<number>(50);
+  const knobs = results.by_rule[ruleId]?.tuning_knobs ?? rule.tuning_knobs ?? [];
+  const [profile, setProfile] = useState<EnvironmentProfile>(PROFILES[0]);
+  const [eventsRaw, setEventsRaw] = useState<string>("");
+
+  useEffect(() => {
+    let cancelled = false;
+    const url = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/data/events/${ruleId}_benign.jsonl`;
+    fetch(url)
+      .then((r) => r.text())
+      .then((t) => {
+        if (!cancelled) setEventsRaw(t);
+      })
+      .catch(() => setEventsRaw(""));
+    return () => {
+      cancelled = true;
+    };
+  }, [ruleId]);
+
+  const events = useMemo(() => {
+    return eventsRaw
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean)
+      .map((l) => JSON.parse(l) as Record<string, any>);
+  }, [eventsRaw]);
 
   const estimate = useMemo(() => {
-    const base = results.by_rule[ruleId]?.tests.find((t) => t.case === "malicious")?.actual_alerts ?? 0;
-    const multiplier = 1 + (50 - aggressiveness) / 80; // lower aggressiveness → more alerts
-    return Math.max(0, Math.round(base * multiplier));
-  }, [aggressiveness, results, ruleId]);
+    const compiled = rule.compiled;
+    if (!compiled) return { baseline: 0, suppressed: 0, delta: 0 };
+
+    // Estimate noise reduction by simulating profile suppressions on the benign stream.
+    let baseline = 0;
+    let suppressed = 0;
+    for (const e of events) {
+      const res = evaluateCompiledRule(compiled, e);
+      if (res.matched) baseline += 1;
+      if (res.matched && isSuppressedByProfile(profile, e)) suppressed += 1;
+    }
+    return { baseline, suppressed, delta: suppressed };
+  }, [events, profile, rule.compiled]);
 
   return (
     <div className="card">
       <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
-        <div className="pill">tuning simulator (demo)</div>
-        <div className="pill">estimated alerts: {estimate}</div>
+        <div className="pill">tuning simulator</div>
+        <div className="pill">
+          benign alerts baseline: {estimate.baseline} • suppressed by profile: {estimate.suppressed}
+        </div>
       </div>
       <p className="muted" style={{ margin: "10px 0 0 0" }}>
-        This is a client-side demo knob (real tuning would modify rule filters/allowlists and re-run the harness).
+        This simulator replays the benign dataset client-side and applies environment suppressions to estimate noise reduction.
       </p>
+
       <div style={{ marginTop: 12 }}>
-        <div className="pill">aggressiveness</div>
-        <input
-          className="input"
-          type="range"
-          min={0}
-          max={100}
-          value={aggressiveness}
-          onChange={(e) => setAggressiveness(Number(e.target.value))}
-        />
+        <ProfileSelector profiles={PROFILES} value={profile} onChange={setProfile} />
       </div>
+
       {knobs.length ? (
         <div style={{ marginTop: 12 }}>
           <div className="pill">suggested tuning knobs</div>
@@ -60,4 +94,3 @@ export default function RuleTuningSimulator({
     </div>
   );
 }
-

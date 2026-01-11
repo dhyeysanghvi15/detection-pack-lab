@@ -1,7 +1,9 @@
 import PassRateGauge from "../components/Charts/PassRateGauge";
 import SeverityPie from "../components/Charts/SeverityPie";
 import TacticBar from "../components/Charts/TacticBar";
+import PackScoreboard from "../components/PackScoreboard";
 import { loadCoverage, loadMeta, loadResults, loadRulesIndex } from "../lib/data";
+import { historyAvailable, loadHistoryMeta, loadHistoryResults, loadHistoryRulesIndex } from "../lib/history";
 
 export default async function Page() {
   const [meta, results, coverage, index] = await Promise.all([
@@ -10,6 +12,11 @@ export default async function Page() {
     loadCoverage(),
     loadRulesIndex(),
   ]);
+
+  const histOk = await historyAvailable();
+  const [hMeta, hResults, hIndex] = histOk
+    ? await Promise.all([loadHistoryMeta(), loadHistoryResults(), loadHistoryRulesIndex()])
+    : [null, null, null];
 
   return (
     <div className="grid" style={{ gap: 18 }}>
@@ -26,6 +33,15 @@ export default async function Page() {
         <SeverityPie rules={index.rules} />
         <TacticBar rules={index.rules} />
       </div>
+
+      <PackScoreboard
+        current={index.rules}
+        currentMeta={meta}
+        currentResults={results}
+        history={hIndex?.rules || null}
+        historyMeta={hMeta}
+        historyResults={hResults}
+      />
 
       <div className="grid" style={{ gridTemplateColumns: "1fr 1fr 1fr 1fr" }}>
         <div className="card">
@@ -72,4 +88,3 @@ export default async function Page() {
     </div>
   );
 }
-

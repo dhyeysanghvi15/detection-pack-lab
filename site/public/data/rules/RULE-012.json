@@ -1,11 +1,14 @@
 {
   "id": "RULE-012",
+  "name": "Rundll32 comsvcs.dll MiniDump (LSASS Dump)",
   "title": "Rundll32 comsvcs.dll MiniDump (LSASS Dump)",
   "description": "Detects rundll32 usage of comsvcs.dll MiniDump, a common LSASS dumping technique.",
-  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-012-windows-rundll32-comsvcs-minidump.yml",
-  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-012-windows-rundll32-comsvcs-minidump.kql",
-  "sigma": "title: Rundll32 comsvcs.dll MiniDump (LSASS Dump)\nid: RULE-012\ndescription: Detects rundll32 usage of comsvcs.dll MiniDump, a common LSASS dumping technique.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID: 1\n    Image|endswith: \"\\\\rundll32.exe\"\n    CommandLine|contains:\n      - comsvcs.dll\n      - MiniDump\n  condition: selection\nfalsepositives:\n  - Rare; some admin tooling may use rundll32 (review)\nlevel: critical\ntags:\n  - attack.t1003\n  - attack.credential_access\n\n",
-  "elastic": "EventID:1 and Image:*\\\\\\\\rundll32.exe and (CommandLine:*comsvcs.dll* and CommandLine:*MiniDump*)",
+  "sigma_path": "/repo/rules/sigma/RULE-012-windows-rundll32-comsvcs-minidump.yml",
+  "elastic_path": "/repo/rules/elastic/RULE-012-windows-rundll32-comsvcs-minidump.kql",
+  "sigma_text": "title: Rundll32 comsvcs.dll MiniDump (LSASS Dump)\nid: RULE-012\ndescription: Detects rundll32 usage of comsvcs.dll MiniDump, a common LSASS dumping technique.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID: 1\n    Image|endswith: \"\\\\rundll32.exe\"\n    CommandLine|contains:\n      - comsvcs.dll\n      - MiniDump\n  condition: selection\nfalsepositives:\n  - Rare; some admin tooling may use rundll32 (review)\nlevel: critical\ntags:\n  - attack.t1003\n  - attack.credential_access\n\n",
+  "elastic_text": "EventID:1 and Image:*\\\\\\\\rundll32.exe and (CommandLine:*comsvcs.dll* and CommandLine:*MiniDump*)",
+  "elastic_kql": "EventID:1 and Image:*\\\\\\\\rundll32.exe and (CommandLine:*comsvcs.dll* and CommandLine:*MiniDump*)",
+  "elastic_esql": "FROM logs | WHERE EventID:1 and Image:*\\\\\\\\rundll32.exe and (CommandLine:*comsvcs.dll* and CommandLine:*MiniDump*)",
   "logsource": "windows/sysmon",
   "tags": [
     "attack.t1003",
@@ -24,5 +27,117 @@
     "EventID",
     "Image",
     "CommandLine"
-  ]
+  ],
+  "false_positive_notes": [
+    "Rare; some admin tooling may use rundll32 (review)"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.hosts",
+      "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "critical",
+    "fields_used": [
+      "EventID",
+      "Image",
+      "CommandLine"
+    ],
+    "contains_or_regex_clauses": 1,
+    "has_false_positive_notes": true,
+    "status": "stable"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "EventID",
+          "op": "eq",
+          "values": [
+            1
+          ]
+        },
+        {
+          "field": "Image",
+          "op": "endswith",
+          "values": [
+            "\\rundll32.exe"
+          ]
+        },
+        {
+          "field": "CommandLine",
+          "op": "contains",
+          "values": [
+            "comsvcs.dll",
+            "MiniDump"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "1"
+            },
+            {
+              "field": "Image",
+              "value": "C:\\Windows\\System32\\rundll32.exe"
+            }
+          ],
+          "failed_clause": "CommandLine contains ['comsvcs.dll', 'MiniDump']",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 1,
+        "actual_alerts": 1,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "1"
+            },
+            {
+              "field": "Image",
+              "value": "C:\\Windows\\System32\\rundll32.exe"
+            },
+            {
+              "field": "CommandLine",
+              "value": "rundll32.exe C:\\Windows\\System32\\comsvcs.dll, MiniDump 632 C:\\Users\\alice\\AppData\\Local\\Temp\\lsass.dmp full"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 1,
+      "alerts_actual": 1
+    }
+  }
 }

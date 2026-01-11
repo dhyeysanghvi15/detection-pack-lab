@@ -1,0 +1,125 @@
+{
+  "id": "RULE-007",
+  "name": "Windows Service Installed from User-Writable Path",
+  "title": "Windows Service Installed from User-Writable Path",
+  "description": "Detects a new Windows service installation where the binary path is in a user-writable directory.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-007-windows-service-installed-suspicious-path.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-007-windows-service-installed-suspicious-path.kql",
+  "sigma_text": "title: Windows Service Installed from User-Writable Path\nid: RULE-007\ndescription: Detects a new Windows service installation where the binary path is in a user-writable directory.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: system\ndetection:\n  selection:\n    EventID: 7045\n    ImagePath|contains: \"\\\\Users\\\\\"\n  condition: selection\nfalsepositives:\n  - Rare; some legitimate tools may install from user space (should be reviewed)\nlevel: high\ntags:\n  - attack.t1543\n  - attack.persistence\n\n",
+  "elastic_text": "EventID:7045 and ImagePath:*\\\\\\\\Users\\\\\\\\*",
+  "elastic_kql": "EventID:7045 and ImagePath:*\\\\\\\\Users\\\\\\\\*",
+  "elastic_esql": "FROM logs | WHERE EventID:7045 and ImagePath:*\\\\\\\\Users\\\\\\\\*",
+  "logsource": "windows/system",
+  "tags": [
+    "attack.t1543",
+    "attack.persistence"
+  ],
+  "tactic": "Persistence",
+  "techniques": [
+    "T1543"
+  ],
+  "severity": "high",
+  "status": "passing",
+  "confidence": 83,
+  "noise_risk": 40,
+  "quality_score": 74,
+  "fields_used": [
+    "EventID",
+    "ImagePath"
+  ],
+  "false_positive_notes": [
+    "Rare; some legitimate tools may install from user space (should be reviewed)"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.hosts",
+      "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "high",
+    "fields_used": [
+      "EventID",
+      "ImagePath"
+    ],
+    "contains_or_regex_clauses": 1,
+    "has_false_positive_notes": true,
+    "status": "stable"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "EventID",
+          "op": "eq",
+          "values": [
+            7045
+          ]
+        },
+        {
+          "field": "ImagePath",
+          "op": "contains",
+          "values": [
+            "\\Users\\"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "7045"
+            }
+          ],
+          "failed_clause": "ImagePath contains ['\\\\Users\\\\']",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 1,
+        "actual_alerts": 1,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "7045"
+            },
+            {
+              "field": "ImagePath",
+              "value": "C:\\Users\\alice\\AppData\\Roaming\\winupdate.exe"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 1,
+      "alerts_actual": 1
+    }
+  }
+}

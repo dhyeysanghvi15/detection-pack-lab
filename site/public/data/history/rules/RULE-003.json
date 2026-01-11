@@ -1,0 +1,159 @@
+{
+  "id": "RULE-003",
+  "name": "AWS ConsoleLogin Success Without MFA",
+  "title": "AWS ConsoleLogin Success Without MFA",
+  "description": "Detects a successful AWS console login where MFA was not used.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-003-aws-console-login-without-mfa.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-003-aws-console-login-without-mfa.kql",
+  "sigma_text": "title: AWS ConsoleLogin Success Without MFA\nid: RULE-003\ndescription: Detects a successful AWS console login where MFA was not used.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: signin.amazonaws.com\n    eventName: ConsoleLogin\n    responseElements.ConsoleLogin: Success\n    additionalEventData.MFAUsed: \"No\"\n  condition: selection\nfalsepositives:\n  - Accounts that are legitimately exempt from MFA (should be rare)\nlevel: high\ntags:\n  - attack.t1078\n  - attack.initial_access\n\n",
+  "elastic_text": "eventSource:\"signin.amazonaws.com\" and eventName:\"ConsoleLogin\" and responseElements.ConsoleLogin:\"Success\" and additionalEventData.MFAUsed:\"No\"",
+  "elastic_kql": "eventSource:\"signin.amazonaws.com\" and eventName:\"ConsoleLogin\" and responseElements.ConsoleLogin:\"Success\" and additionalEventData.MFAUsed:\"No\"",
+  "elastic_esql": "FROM logs | WHERE eventSource:\"signin.amazonaws.com\" and eventName:\"ConsoleLogin\" and responseElements.ConsoleLogin:\"Success\" and additionalEventData.MFAUsed:\"No\"",
+  "logsource": "aws/cloudtrail",
+  "tags": [
+    "attack.t1078",
+    "attack.initial_access"
+  ],
+  "tactic": "Initial Access",
+  "techniques": [
+    "T1078"
+  ],
+  "severity": "high",
+  "status": "passing",
+  "confidence": 84,
+  "noise_risk": 33,
+  "quality_score": 77,
+  "fields_used": [
+    "eventSource",
+    "eventName",
+    "responseElements.ConsoleLogin",
+    "additionalEventData.MFAUsed"
+  ],
+  "false_positive_notes": [
+    "Accounts that are legitimately exempt from MFA (should be rare)"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.ip_ranges",
+      "description": "Exclude trusted corporate egress ranges to reduce noise.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "high",
+    "fields_used": [
+      "eventSource",
+      "eventName",
+      "responseElements.ConsoleLogin",
+      "additionalEventData.MFAUsed"
+    ],
+    "contains_or_regex_clauses": 0,
+    "has_false_positive_notes": true,
+    "status": "stable"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "eventSource",
+          "op": "eq",
+          "values": [
+            "signin.amazonaws.com"
+          ]
+        },
+        {
+          "field": "eventName",
+          "op": "eq",
+          "values": [
+            "ConsoleLogin"
+          ]
+        },
+        {
+          "field": "responseElements.ConsoleLogin",
+          "op": "eq",
+          "values": [
+            "Success"
+          ]
+        },
+        {
+          "field": "additionalEventData.MFAUsed",
+          "op": "eq",
+          "values": [
+            "No"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "eventSource",
+              "value": "signin.amazonaws.com"
+            },
+            {
+              "field": "eventName",
+              "value": "ConsoleLogin"
+            },
+            {
+              "field": "responseElements.ConsoleLogin",
+              "value": "Success"
+            }
+          ],
+          "failed_clause": "additionalEventData.MFAUsed eq ['No']",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 1,
+        "actual_alerts": 1,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "eventSource",
+              "value": "signin.amazonaws.com"
+            },
+            {
+              "field": "eventName",
+              "value": "ConsoleLogin"
+            },
+            {
+              "field": "responseElements.ConsoleLogin",
+              "value": "Success"
+            },
+            {
+              "field": "additionalEventData.MFAUsed",
+              "value": "No"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 1,
+      "alerts_actual": 1
+    }
+  }
+}

@@ -15,7 +15,19 @@ function bestEffortSentinelKql(kql: string) {
   return kql.replace(/:/g, " == ");
 }
 
-export default function CopyAsButtons({ sigma, kql }: { sigma: string; kql: string }) {
+function bestEffortEsql(kql: string) {
+  return `FROM logs | WHERE ${kql}`;
+}
+
+export default function CopyAsButtons({
+  sigma,
+  kql,
+  esql,
+}: {
+  sigma: string;
+  kql: string;
+  esql?: string;
+}) {
   return (
     <div className="card">
       <div className="pill">copy as</div>
@@ -25,6 +37,9 @@ export default function CopyAsButtons({ sigma, kql }: { sigma: string; kql: stri
         </button>
         <button className="btn" onClick={() => copy(kql)}>
           Elastic KQL
+        </button>
+        <button className="btn" onClick={() => copy(esql || bestEffortEsql(kql))}>
+          ES|QL {esql ? "" : "(best-effort)"}
         </button>
         <button className="btn" onClick={() => copy(bestEffortSpl(kql))}>
           SPL (best-effort)
@@ -36,4 +51,3 @@ export default function CopyAsButtons({ sigma, kql }: { sigma: string; kql: stri
     </div>
   );
 }
-

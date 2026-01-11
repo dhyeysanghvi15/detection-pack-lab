@@ -5,9 +5,11 @@ import DiffViewer from "../../../components/DiffViewer";
 import MonacoViewer from "../../../components/MonacoViewer";
 import RuleTuningSimulator from "../../../components/RuleTuningSimulator";
 import Scoreboard from "../../../components/Scoreboard";
-import TimelinePlayer from "../../../components/TimelinePlayer";
+import RuleReplaySection from "../../../components/RuleReplaySection";
+import RuleRiskMeter from "../../../components/RuleRiskMeter";
+import RuleSnapshotDiff from "../../../components/RuleSnapshotDiff";
 import WhyPanel from "../../../components/WhyPanel";
-import { loadResults, loadRuleDetail, loadRulesIndex } from "../../../lib/data";
+import { loadAllRuleDetails, loadResults, loadRuleDetail, loadRulesIndex } from "../../../lib/data";
 import { statusPillClass } from "../../../lib/normalize";
 
 export async function generateStaticParams() {
@@ -17,11 +19,17 @@ export async function generateStaticParams() {
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
-  const [rule, results] = await Promise.all([loadRuleDetail(id), loadResults()]);
+  const [rule, results, idx] = await Promise.all([loadRuleDetail(id), loadResults(), loadRulesIndex()]);
   if (!rule) return notFound();
 
   const rr = results.by_rule[id];
   if (!rr) return notFound();
+
+  const allDetails = await loadAllRuleDetails(idx.rules.map((r) => r.id));
+  const fieldCounts: Record<string, number> = {};
+  for (const d of allDetails) {
+    for (const f of d.fields_used || []) fieldCounts[f] = (fieldCounts[f] || 0) + 1;
+  }
 
   return (
     <div className="grid" style={{ gap: 18 }}>
@@ -70,33 +78,37 @@ export default async function Page({ params }: { params: { id: string } }) {
       </div>
 
       <Scoreboard rule={rule} />
+      <RuleRiskMeter rule={rule} fieldCounts={fieldCounts} />
 
       <div className="grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
         <div>
           <div className="pill" style={{ marginBottom: 10 }}>
             sigma
           </div>
-          <MonacoViewer language="yaml" value={rule.sigma} />
+          <MonacoViewer language="yaml" value={rule.sigma_text} />
         </div>
         <div>
           <div className="pill" style={{ marginBottom: 10 }}>
             elastic (kql)
           </div>
-          <MonacoViewer language="text" value={rule.elastic} />
+          <MonacoViewer language="text" value={rule.elastic_text} />
         </div>
       </div>
 
-      <CopyAsButtons sigma={rule.sigma} kql={rule.elastic} />
+      <CopyAsButtons sigma={rule.sigma_text} kql={rule.elastic_text} esql={rule.elastic_esql} />
       <WhyPanel ruleId={id} results={results} />
 
-      <div className="grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
-        <TimelinePlayer ruleId={id} caseName="malicious" />
-        <TimelinePlayer ruleId={id} caseName="benign" />
+      <div className="card">
+        <div className="pill">detection replay player</div>
+        <p className="muted" style={{ margin: "10px 0 0 0" }}>
+          Plays the event stream and evaluates the compiled Sigma logic client-side (deterministic + explainable).
+        </p>
       </div>
+      <RuleReplaySection rule={rule} />
 
-      <RuleTuningSimulator ruleId={id} results={results} />
-      <DiffViewer a={rule.sigma} b={rule.elastic} />
+      <RuleTuningSimulator ruleId={id} results={results} rule={rule} />
+      <RuleSnapshotDiff current={rule} />
+      <DiffViewer a={rule.sigma_text} b={rule.elastic_text} />
     </div>
   );
 }
-

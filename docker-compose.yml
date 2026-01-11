@@ -1,5 +1,5 @@
 services:
-  harness:
+  harness-test:
     build:
       context: .
       dockerfile: harness/Dockerfile
@@ -15,15 +15,28 @@ services:
     working_dir: /repo
     volumes:
       - ./:/repo
+    depends_on:
+      harness-test:
+        condition: service_completed_successfully
     command: ["python", "harness/run.py", "artifacts"]
 
-  site:
+  site-build:
     image: node:20-alpine
     working_dir: /site
     volumes:
       - ./site:/site
+    depends_on:
+      artifacts:
+        condition: service_completed_successfully
+    command: ["sh", "-lc", "npm ci && npm run build && npm run export"]
+
+  site:
+    image: nginx:alpine
     ports:
       - "3000:80"
+    volumes:
+      - ./site/out:/usr/share/nginx/html:ro
     depends_on:
-      - artifacts
-    command: ["sh", "-lc", "npm ci && npm run dev -- -p 80 -H 0.0.0.0"]
+      site-build:
+        condition: service_completed_successfully
+    restart: unless-stopped

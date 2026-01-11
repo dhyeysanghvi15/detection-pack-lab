@@ -1,11 +1,14 @@
 {
   "id": "RULE-009",
+  "name": "Sysmon WMI Event Subscription Created",
   "title": "Sysmon WMI Event Subscription Created",
   "description": "Detects creation of WMI event subscriptions (EventID 19/20/21), commonly used for stealthy persistence.",
-  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-009-sysmon-wmi-event-subscription.yml",
-  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-009-sysmon-wmi-event-subscription.kql",
-  "sigma": "title: Sysmon WMI Event Subscription Created\nid: RULE-009\ndescription: Detects creation of WMI event subscriptions (EventID 19/20/21), commonly used for stealthy persistence.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID:\n      - 19\n      - 20\n      - 21\n  condition: selection\nfalsepositives:\n  - Legitimate management tooling using permanent WMI subscriptions\nlevel: high\ntags:\n  - attack.t1546\n  - attack.persistence\n\n",
-  "elastic": "(EventID:19 or EventID:20 or EventID:21)",
+  "sigma_path": "/repo/rules/sigma/RULE-009-sysmon-wmi-event-subscription.yml",
+  "elastic_path": "/repo/rules/elastic/RULE-009-sysmon-wmi-event-subscription.kql",
+  "sigma_text": "title: Sysmon WMI Event Subscription Created\nid: RULE-009\ndescription: Detects creation of WMI event subscriptions (EventID 19/20/21), commonly used for stealthy persistence.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID:\n      - 19\n      - 20\n      - 21\n  condition: selection\nfalsepositives:\n  - Legitimate management tooling using permanent WMI subscriptions\nlevel: high\ntags:\n  - attack.t1546\n  - attack.persistence\n\n",
+  "elastic_text": "(EventID:19 or EventID:20 or EventID:21)",
+  "elastic_kql": "(EventID:19 or EventID:20 or EventID:21)",
+  "elastic_esql": "FROM logs | WHERE (EventID:19 or EventID:20 or EventID:21)",
   "logsource": "windows/sysmon",
   "tags": [
     "attack.t1546",
@@ -22,5 +25,85 @@
   "quality_score": 81,
   "fields_used": [
     "EventID"
-  ]
+  ],
+  "false_positive_notes": [
+    "Legitimate management tooling using permanent WMI subscriptions"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.hosts",
+      "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "high",
+    "fields_used": [
+      "EventID"
+    ],
+    "contains_or_regex_clauses": 0,
+    "has_false_positive_notes": true,
+    "status": "stable"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "EventID",
+          "op": "eq",
+          "values": [
+            19,
+            20,
+            21
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [],
+          "failed_clause": "EventID eq [19, 20, 21]",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 2,
+        "actual_alerts": 2,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "21"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 2,
+      "alerts_actual": 2
+    }
+  }
 }

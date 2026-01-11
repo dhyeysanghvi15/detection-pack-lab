@@ -1,11 +1,14 @@
 {
   "id": "RULE-011",
+  "name": "Sysmon LSASS Access (Potential Credential Dumping)",
   "title": "Sysmon LSASS Access (Potential Credential Dumping)",
   "description": "Detects process access to lsass.exe with high privileges, often associated with credential dumping.",
-  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-011-sysmon-lsass-access.yml",
-  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-011-sysmon-lsass-access.kql",
-  "sigma": "title: Sysmon LSASS Access (Potential Credential Dumping)\nid: RULE-011\ndescription: Detects process access to lsass.exe with high privileges, often associated with credential dumping.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID: 10\n    TargetImage|endswith: \"\\\\lsass.exe\"\n    GrantedAccess|contains: \"0x1fffff\"\n  condition: selection\nfalsepositives:\n  - Security products inspecting LSASS (allowlist required)\nlevel: critical\ntags:\n  - attack.t1003\n  - attack.credential_access\n\n",
-  "elastic": "EventID:10 and TargetImage:*\\\\\\\\lsass.exe and GrantedAccess:*0x1fffff*",
+  "sigma_path": "/repo/rules/sigma/RULE-011-sysmon-lsass-access.yml",
+  "elastic_path": "/repo/rules/elastic/RULE-011-sysmon-lsass-access.kql",
+  "sigma_text": "title: Sysmon LSASS Access (Potential Credential Dumping)\nid: RULE-011\ndescription: Detects process access to lsass.exe with high privileges, often associated with credential dumping.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID: 10\n    TargetImage|endswith: \"\\\\lsass.exe\"\n    GrantedAccess|contains: \"0x1fffff\"\n  condition: selection\nfalsepositives:\n  - Security products inspecting LSASS (allowlist required)\nlevel: critical\ntags:\n  - attack.t1003\n  - attack.credential_access\n\n",
+  "elastic_text": "EventID:10 and TargetImage:*\\\\\\\\lsass.exe and GrantedAccess:*0x1fffff*",
+  "elastic_kql": "EventID:10 and TargetImage:*\\\\\\\\lsass.exe and GrantedAccess:*0x1fffff*",
+  "elastic_esql": "FROM logs | WHERE EventID:10 and TargetImage:*\\\\\\\\lsass.exe and GrantedAccess:*0x1fffff*",
   "logsource": "windows/sysmon",
   "tags": [
     "attack.t1003",
@@ -24,5 +27,116 @@
     "EventID",
     "TargetImage",
     "GrantedAccess"
-  ]
+  ],
+  "false_positive_notes": [
+    "Security products inspecting LSASS (allowlist required)"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.hosts",
+      "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "critical",
+    "fields_used": [
+      "EventID",
+      "TargetImage",
+      "GrantedAccess"
+    ],
+    "contains_or_regex_clauses": 1,
+    "has_false_positive_notes": true,
+    "status": "stable"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "EventID",
+          "op": "eq",
+          "values": [
+            10
+          ]
+        },
+        {
+          "field": "TargetImage",
+          "op": "endswith",
+          "values": [
+            "\\lsass.exe"
+          ]
+        },
+        {
+          "field": "GrantedAccess",
+          "op": "contains",
+          "values": [
+            "0x1fffff"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "10"
+            },
+            {
+              "field": "TargetImage",
+              "value": "C:\\Windows\\System32\\lsass.exe"
+            }
+          ],
+          "failed_clause": "GrantedAccess contains ['0x1fffff']",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 1,
+        "actual_alerts": 1,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "10"
+            },
+            {
+              "field": "TargetImage",
+              "value": "C:\\Windows\\System32\\lsass.exe"
+            },
+            {
+              "field": "GrantedAccess",
+              "value": "0x1fffff"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 1,
+      "alerts_actual": 1
+    }
+  }
 }

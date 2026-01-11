@@ -1,0 +1,142 @@
+{
+  "id": "RULE-006",
+  "name": "Sysmon Registry Run Key Persistence",
+  "title": "Sysmon Registry Run Key Persistence",
+  "description": "Detects modifications to common Windows Run keys used for persistence.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-006-sysmon-run-key-persistence.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-006-sysmon-run-key-persistence.kql",
+  "sigma_text": "title: Sysmon Registry Run Key Persistence\nid: RULE-006\ndescription: Detects modifications to common Windows Run keys used for persistence.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID: 13\n    TargetObject|contains: \"\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\"\n    Details|contains: \"\\\\AppData\\\\\"\n  condition: selection\nfalsepositives:\n  - Legitimate software installation or updates\nlevel: high\ntags:\n  - attack.t1547\n  - attack.persistence\n",
+  "elastic_text": "EventID:13 and TargetObject:*\\\\\\\\Software\\\\\\\\Microsoft\\\\\\\\Windows\\\\\\\\CurrentVersion\\\\\\\\Run* and Details:*\\\\\\\\AppData\\\\\\\\*",
+  "elastic_kql": "EventID:13 and TargetObject:*\\\\\\\\Software\\\\\\\\Microsoft\\\\\\\\Windows\\\\\\\\CurrentVersion\\\\\\\\Run* and Details:*\\\\\\\\AppData\\\\\\\\*",
+  "elastic_esql": "FROM logs | WHERE EventID:13 and TargetObject:*\\\\\\\\Software\\\\\\\\Microsoft\\\\\\\\Windows\\\\\\\\CurrentVersion\\\\\\\\Run* and Details:*\\\\\\\\AppData\\\\\\\\*",
+  "logsource": "windows/sysmon",
+  "tags": [
+    "attack.t1547",
+    "attack.persistence"
+  ],
+  "tactic": "Persistence",
+  "techniques": [
+    "T1547"
+  ],
+  "severity": "high",
+  "status": "passing",
+  "confidence": 82,
+  "noise_risk": 55,
+  "quality_score": 67,
+  "fields_used": [
+    "EventID",
+    "TargetObject",
+    "Details"
+  ],
+  "false_positive_notes": [
+    "Legitimate software installation or updates"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.hosts",
+      "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "high",
+    "fields_used": [
+      "EventID",
+      "TargetObject",
+      "Details"
+    ],
+    "contains_or_regex_clauses": 2,
+    "has_false_positive_notes": true,
+    "status": "stable"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "EventID",
+          "op": "eq",
+          "values": [
+            13
+          ]
+        },
+        {
+          "field": "TargetObject",
+          "op": "contains",
+          "values": [
+            "\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+          ]
+        },
+        {
+          "field": "Details",
+          "op": "contains",
+          "values": [
+            "\\AppData\\"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "13"
+            },
+            {
+              "field": "TargetObject",
+              "value": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+            }
+          ],
+          "failed_clause": "Details contains ['\\\\AppData\\\\']",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 1,
+        "actual_alerts": 1,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "13"
+            },
+            {
+              "field": "TargetObject",
+              "value": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Updater"
+            },
+            {
+              "field": "Details",
+              "value": "\"C:\\Users\\alice\\AppData\\Roaming\\svchost.exe\""
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 1,
+      "alerts_actual": 1
+    }
+  }
+}

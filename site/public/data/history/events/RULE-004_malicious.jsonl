@@ -1,0 +1,3 @@
+{"@timestamp":"2026-01-01T00:03:10Z","activityDisplayName":"Consent to application","consentType":"AllPrincipals","result":"success","appDisplayName":"EvilOAuthApp","initiatedBy":{"user":{"userPrincipalName":"alice@contoso.example"}}}
+{"@timestamp":"2026-01-01T00:03:11Z","activityDisplayName":"Update application","result":"success","appDisplayName":"EvilOAuthApp","initiatedBy":{"user":{"userPrincipalName":"alice@contoso.example"}}}
+

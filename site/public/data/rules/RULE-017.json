@@ -1,11 +1,14 @@
 {
   "id": "RULE-017",
+  "name": "PowerShell Disable Microsoft Defender",
   "title": "PowerShell Disable Microsoft Defender",
   "description": "Detects PowerShell commands that disable Defender real-time monitoring.",
-  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-017-powershell-disable-defender.yml",
-  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-017-powershell-disable-defender.kql",
-  "sigma": "title: PowerShell Disable Microsoft Defender\nid: RULE-017\ndescription: Detects PowerShell commands that disable Defender real-time monitoring.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: powershell\ndetection:\n  selection:\n    EventID: 4104\n    ScriptBlockText|contains: DisableRealtimeMonitoring\n  condition: selection\nfalsepositives:\n  - Approved security tooling changes (change control)\nlevel: high\ntags:\n  - attack.t1562\n  - attack.defense_evasion\n",
-  "elastic": "EventID:4104 and ScriptBlockText:*DisableRealtimeMonitoring*",
+  "sigma_path": "/repo/rules/sigma/RULE-017-powershell-disable-defender.yml",
+  "elastic_path": "/repo/rules/elastic/RULE-017-powershell-disable-defender.kql",
+  "sigma_text": "title: PowerShell Disable Microsoft Defender\nid: RULE-017\ndescription: Detects PowerShell commands that disable Defender real-time monitoring.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: powershell\ndetection:\n  selection:\n    EventID: 4104\n    ScriptBlockText|contains: DisableRealtimeMonitoring\n  condition: selection\nfalsepositives:\n  - Approved security tooling changes (change control)\nlevel: high\ntags:\n  - attack.t1562\n  - attack.defense_evasion\n",
+  "elastic_text": "EventID:4104 and ScriptBlockText:*DisableRealtimeMonitoring*",
+  "elastic_kql": "EventID:4104 and ScriptBlockText:*DisableRealtimeMonitoring*",
+  "elastic_esql": "FROM logs | WHERE EventID:4104 and ScriptBlockText:*DisableRealtimeMonitoring*",
   "logsource": "windows/powershell",
   "tags": [
     "attack.t1562",
@@ -23,5 +26,100 @@
   "fields_used": [
     "EventID",
     "ScriptBlockText"
-  ]
+  ],
+  "false_positive_notes": [
+    "Approved security tooling changes (change control)"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.hosts",
+      "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "high",
+    "fields_used": [
+      "EventID",
+      "ScriptBlockText"
+    ],
+    "contains_or_regex_clauses": 1,
+    "has_false_positive_notes": true,
+    "status": "stable"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "EventID",
+          "op": "eq",
+          "values": [
+            4104
+          ]
+        },
+        {
+          "field": "ScriptBlockText",
+          "op": "contains",
+          "values": [
+            "DisableRealtimeMonitoring"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "4104"
+            }
+          ],
+          "failed_clause": "ScriptBlockText contains ['DisableRealtimeMonitoring']",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 2,
+        "actual_alerts": 2,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "4104"
+            },
+            {
+              "field": "ScriptBlockText",
+              "value": "Set-MpPreference -DisableRealtimeMonitoring 1"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 2,
+      "alerts_actual": 2
+    }
+  }
 }

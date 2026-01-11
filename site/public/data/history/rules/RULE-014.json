@@ -1,0 +1,120 @@
+{
+  "id": "RULE-014",
+  "name": "Okta MFA Push Rejected (Potential Push Fatigue)",
+  "title": "Okta MFA Push Rejected (Potential Push Fatigue)",
+  "description": "Detects Okta Verify push rejections which may indicate push fatigue attempts.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-014-okta-mfa-push-rejected.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-014-okta-mfa-push-rejected.kql",
+  "sigma_text": "title: Okta MFA Push Rejected (Potential Push Fatigue)\nid: RULE-014\ndescription: Detects Okta Verify push rejections which may indicate push fatigue attempts.\nauthor: detpack-lab\nstatus: experimental\nlogsource:\n  product: okta\n  service: system_log\ndetection:\n  selection:\n    eventType: user.mfa.okta_verify.push_rejected\n    outcome.result: FAILURE\n  condition: selection\nfalsepositives:\n  - User legitimately rejecting unexpected push prompts\nlevel: medium\ntags:\n  - attack.t1621\n  - attack.credential_access\n\n",
+  "elastic_text": "eventType:\"user.mfa.okta_verify.push_rejected\" and outcome.result:\"FAILURE\"",
+  "elastic_kql": "eventType:\"user.mfa.okta_verify.push_rejected\" and outcome.result:\"FAILURE\"",
+  "elastic_esql": "FROM logs | WHERE eventType:\"user.mfa.okta_verify.push_rejected\" and outcome.result:\"FAILURE\"",
+  "logsource": "okta/system_log",
+  "tags": [
+    "attack.t1621",
+    "attack.credential_access"
+  ],
+  "tactic": "Credential Access",
+  "techniques": [
+    "T1621"
+  ],
+  "severity": "medium",
+  "status": "experimental",
+  "confidence": 73,
+  "noise_risk": 20,
+  "quality_score": 76,
+  "fields_used": [
+    "eventType",
+    "outcome.result"
+  ],
+  "false_positive_notes": [
+    "User legitimately rejecting unexpected push prompts"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.ip_ranges",
+      "description": "Exclude trusted corporate egress ranges to reduce noise.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "medium",
+    "fields_used": [
+      "eventType",
+      "outcome.result"
+    ],
+    "contains_or_regex_clauses": 0,
+    "has_false_positive_notes": true,
+    "status": "experimental"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "eventType",
+          "op": "eq",
+          "values": [
+            "user.mfa.okta_verify.push_rejected"
+          ]
+        },
+        {
+          "field": "outcome.result",
+          "op": "eq",
+          "values": [
+            "FAILURE"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [],
+          "failed_clause": "eventType eq ['user.mfa.okta_verify.push_rejected']",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 2,
+        "actual_alerts": 2,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "eventType",
+              "value": "user.mfa.okta_verify.push_rejected"
+            },
+            {
+              "field": "outcome.result",
+              "value": "FAILURE"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 2,
+      "alerts_actual": 2
+    }
+  }
+}

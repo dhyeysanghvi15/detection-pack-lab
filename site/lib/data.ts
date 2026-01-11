@@ -31,3 +31,6 @@ export async function loadRuleDetail(id: string): Promise<RuleDetail> {
   return readJson<RuleDetail>(path.join("rules", `${id}.json`));
 }
 
+export async function loadAllRuleDetails(ids: string[]): Promise<RuleDetail[]> {
+  return Promise.all(ids.map((id) => loadRuleDetail(id)));
+}

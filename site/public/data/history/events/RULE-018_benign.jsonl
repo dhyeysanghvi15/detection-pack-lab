@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:17:01Z","EventID":4104,"ScriptBlockText":"Write-Host 'hello'","User":"CONTOSO\\alice"}
+{"@timestamp":"2026-01-01T00:17:02Z","EventID":4104,"ScriptBlockText":"powershell.exe -NoProfile -Command Get-Date","User":"CONTOSO\\alice"}
+{"@timestamp":"2026-01-01T00:17:03Z","EventID":1,"Image":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe","CommandLine":"powershell.exe -NoProfile -Command Get-Date","User":"CONTOSO\\alice"}
+

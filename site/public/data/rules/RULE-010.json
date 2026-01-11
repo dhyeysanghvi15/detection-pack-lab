@@ -1,11 +1,14 @@
 {
   "id": "RULE-010",
+  "name": "Sysmon Startup Folder Drop",
   "title": "Sysmon Startup Folder Drop",
   "description": "Detects creation of executables or shortcuts in the Windows Startup folder.",
-  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-010-sysmon-startup-folder-drop.yml",
-  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-010-sysmon-startup-folder-drop.kql",
-  "sigma": "title: Sysmon Startup Folder Drop\nid: RULE-010\ndescription: Detects creation of executables or shortcuts in the Windows Startup folder.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID: 11\n    TargetFilename|contains: \"\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\\"\n    TargetFilename|endswith:\n      - .lnk\n      - .exe\n  condition: selection\nfalsepositives:\n  - Legitimate software creating startup entries\nlevel: medium\ntags:\n  - attack.t1547\n  - attack.persistence\n\n",
-  "elastic": "EventID:11 and TargetFilename:*\\\\\\\\Microsoft\\\\\\\\Windows\\\\\\\\Start Menu\\\\\\\\Programs\\\\\\\\Startup\\\\\\\\* and (TargetFilename:*.lnk or TargetFilename:*.exe)",
+  "sigma_path": "/repo/rules/sigma/RULE-010-sysmon-startup-folder-drop.yml",
+  "elastic_path": "/repo/rules/elastic/RULE-010-sysmon-startup-folder-drop.kql",
+  "sigma_text": "title: Sysmon Startup Folder Drop\nid: RULE-010\ndescription: Detects creation of executables or shortcuts in the Windows Startup folder.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: sysmon\ndetection:\n  selection:\n    EventID: 11\n    TargetFilename|contains: \"\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\\"\n    TargetFilename|endswith:\n      - .lnk\n      - .exe\n  condition: selection\nfalsepositives:\n  - Legitimate software creating startup entries\nlevel: medium\ntags:\n  - attack.t1547\n  - attack.persistence\n\n",
+  "elastic_text": "EventID:11 and TargetFilename:*\\\\\\\\Microsoft\\\\\\\\Windows\\\\\\\\Start Menu\\\\\\\\Programs\\\\\\\\Startup\\\\\\\\* and (TargetFilename:*.lnk or TargetFilename:*.exe)",
+  "elastic_kql": "EventID:11 and TargetFilename:*\\\\\\\\Microsoft\\\\\\\\Windows\\\\\\\\Start Menu\\\\\\\\Programs\\\\\\\\Startup\\\\\\\\* and (TargetFilename:*.lnk or TargetFilename:*.exe)",
+  "elastic_esql": "FROM logs | WHERE EventID:11 and TargetFilename:*\\\\\\\\Microsoft\\\\\\\\Windows\\\\\\\\Start Menu\\\\\\\\Programs\\\\\\\\Startup\\\\\\\\* and (TargetFilename:*.lnk or TargetFilename:*.exe)",
   "logsource": "windows/sysmon",
   "tags": [
     "attack.t1547",
@@ -23,5 +26,112 @@
   "fields_used": [
     "EventID",
     "TargetFilename"
-  ]
+  ],
+  "false_positive_notes": [
+    "Legitimate software creating startup entries"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.hosts",
+      "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "medium",
+    "fields_used": [
+      "EventID",
+      "TargetFilename"
+    ],
+    "contains_or_regex_clauses": 1,
+    "has_false_positive_notes": true,
+    "status": "stable"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "EventID",
+          "op": "eq",
+          "values": [
+            11
+          ]
+        },
+        {
+          "field": "TargetFilename",
+          "op": "contains",
+          "values": [
+            "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\"
+          ]
+        },
+        {
+          "field": "TargetFilename",
+          "op": "endswith",
+          "values": [
+            ".lnk",
+            ".exe"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "11"
+            }
+          ],
+          "failed_clause": "TargetFilename contains ['\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\']",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 2,
+        "actual_alerts": 2,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "11"
+            },
+            {
+              "field": "TargetFilename",
+              "value": "C:\\Users\\alice\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\OneDriveUpdate.exe"
+            },
+            {
+              "field": "TargetFilename",
+              "value": "C:\\Users\\alice\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\OneDriveUpdate.exe"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 2,
+      "alerts_actual": 2
+    }
+  }
 }

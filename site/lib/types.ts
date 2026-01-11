@@ -70,11 +70,14 @@ export type Coverage = {
 export type RuleDetail = {
   id: string;
   title: string;
+  name?: string;
   description: string;
   sigma_path: string;
   elastic_path: string;
-  sigma: string;
-  elastic: string;
+  sigma_text: string;
+  elastic_text: string;
+  elastic_kql?: string;
+  elastic_esql?: string;
   logsource: string;
   tags: string[];
   tactic: string;
@@ -85,5 +88,31 @@ export type RuleDetail = {
   noise_risk: number;
   quality_score: number;
   fields_used?: string[];
+  false_positive_notes?: string[];
+  tuning_knobs?: Array<{ name: string; description: string; default: string | number }>;
+  score_breakdown?: Record<string, any>;
+  compiled?: {
+    condition: string;
+    selections: Record<
+      string,
+      Array<{
+        field: string;
+        op:
+          | "eq"
+          | "contains"
+          | "startswith"
+          | "endswith"
+          | "re"
+          | "gt"
+          | "gte"
+          | "lt"
+          | "lte";
+        values: any[];
+      }>
+    >;
+  };
+  validation?: {
+    tests: Results["by_rule"][string]["tests"];
+    summary?: { alerts_expected: number; alerts_actual: number };
+  };
 };
-

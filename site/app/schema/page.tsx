@@ -25,8 +25,10 @@ export default async function Page() {
   const idx = await loadRulesIndex();
   const details = await Promise.all(idx.rules.map((r) => loadRuleDetail(r.id)));
   const fieldCount: Record<string, number> = {};
+  const perRuleFields: Array<{ id: string; name: string; fields: string[] }> = [];
   for (const d of details) {
-    const fields = d.fields_used?.length ? d.fields_used : extractFieldsFromSigmaText(d.sigma);
+    const fields = d.fields_used?.length ? d.fields_used : extractFieldsFromSigmaText(d.sigma_text);
+    perRuleFields.push({ id: d.id, name: d.title, fields });
     for (const f of fields) fieldCount[f] = (fieldCount[f] || 0) + 1;
   }
 
@@ -35,6 +37,10 @@ export default async function Page() {
     .sort((a, b) => b.count - a.count);
 
   const brittle = rows.filter((r) => r.count <= 2).slice(0, 12);
+  const mostFields = perRuleFields
+    .slice()
+    .sort((a, b) => b.fields.length - a.fields.length)
+    .slice(0, 10);
 
   return (
     <div className="grid" style={{ gap: 18 }}>
@@ -73,7 +79,32 @@ export default async function Page() {
           </div>
         </div>
       </div>
+
+      <div className="card">
+        <div className="pill">most field-dependent rules</div>
+        <p className="muted" style={{ margin: "10px 0 0 0" }}>
+          Rules that rely on many fields are often more brittle across sources unless mappings are consistent.
+        </p>
+        <div className="grid" style={{ marginTop: 12, gridTemplateColumns: "1fr 1fr" }}>
+          {mostFields.map((r) => (
+            <Link key={r.id} href={`/rules/${r.id}`} className="card" style={{ background: "rgba(255,255,255,0.03)" }}>
+              <div className="row" style={{ justifyContent: "space-between" }}>
+                <span className="pill">{r.id}</span>
+                <span className="pill">{r.fields.length} fields</span>
+              </div>
+              <h3 style={{ margin: "10px 0 0 0" }}>{r.name}</h3>
+              <div className="row" style={{ marginTop: 10 }}>
+                {r.fields.slice(0, 8).map((f) => (
+                  <span key={f} className="pill">
+                    {f}
+                  </span>
+                ))}
+                {r.fields.length > 8 ? <span className="pill">…</span> : null}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
-

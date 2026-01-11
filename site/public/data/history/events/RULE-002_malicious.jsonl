@@ -1,0 +1,3 @@
+{"@timestamp":"2026-01-01T00:01:10Z","eventSource":"iam.amazonaws.com","eventName":"AttachUserPolicy","userIdentity":{"type":"IAMUser","userName":"alice"},"sourceIPAddress":"198.51.100.9","requestParameters":{"userName":"alice","policyArn":"arn:aws:iam::aws:policy/AdministratorAccess"}}
+{"@timestamp":"2026-01-01T00:01:11Z","eventSource":"iam.amazonaws.com","eventName":"ListUsers","userIdentity":{"type":"IAMUser","userName":"alice"},"sourceIPAddress":"198.51.100.9","responseElements":{}}
+

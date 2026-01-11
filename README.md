@@ -6,8 +6,7 @@ Production-style detection engineering portfolio repo: portable Sigma rules, bes
 ```bash
 docker compose up --build
 ```
-- Runs harness validation and generates `site/public/data/*`
-- Serves the site at `http://localhost:3000` (Next.js dev server reading local artifacts)
+- Runs harness tests → generates artifacts → builds static site → serves at `http://localhost:3000`
 
 ## Run locally
 ### 1) Harness tests (Python 3.11+)
@@ -26,7 +25,7 @@ python harness/run.py artifacts
 ### 3) Build the static website
 ```bash
 cd site
-npm install
+npm ci
 npm run build
 npm run export
 ```
@@ -39,6 +38,16 @@ npm run export
 - Each rule has two replay datasets: `benign.jsonl` and `malicious.jsonl` under `tests/cases/RULE-XXX/`.
 - The harness loads the Sigma YAML, evaluates it against each JSONL event stream, and asserts expected alert counts from `expected.json`.
 - The harness writes CI-grade artifacts into `site/public/data/` so the website always matches test results.
+
+## Site pages (all offline; backed by artifacts)
+- `/` — dashboard + pack scoreboard (trend uses `public/data/history/` if present)
+- `/rules` — rule explorer
+- `/rules/RULE-XXX` — Sigma/KQL viewers, replay player (with environment profiles), “why”, noise/tuning simulator, snapshot diff + alert impact
+- `/coverage` — ATT&CK matrix
+- `/noise` — noise lab (baseline vs suppressed estimates + patch snippets)
+- `/diff` — pack diff vs history
+- `/schema` — schema coverage analyzer
+- `/stories` — kill-chain story mode with interactive timeline
 
 ## Repo map
 - `rules/sigma/` — portable Sigma rules (`RULE-001` … `RULE-020`)
@@ -65,12 +74,13 @@ flowchart LR
 - Artifact-driven documentation and visualization (recruiter-first “proof”)
 - ATT&CK mapping + pack health metrics + tuning workflow
 
-## Example screenshots (placeholders)
-- Dashboard
-- Rule Explorer
-- Rule Detail (evidence + timeline replay + “why”)
-- ATT&CK Coverage Matrix
-- Noise Lab + tuning suggestions
+## Artifacts contract (validated)
+The harness enforces JSON Schema validation for:
+- `site/public/data/meta.json`
+- `site/public/data/rules_index.json`
+- `site/public/data/results.json`
+- `site/public/data/coverage.json`
+- `site/public/data/rules/RULE-XXX.json` (per-rule details + compiled matcher for client replay)
 
 ## Limitations
 - Sigma parsing/evaluation supports a pragmatic subset (`equals`, `contains`, `startswith`, `endswith`, numeric comparisons, and boolean conditions).

@@ -1,0 +1,150 @@
+{
+  "id": "RULE-002",
+  "name": "AWS IAM Attach AdministratorAccess Policy",
+  "title": "AWS IAM Attach AdministratorAccess Policy",
+  "description": "Detects attaching the AWS managed AdministratorAccess policy to a user.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-002-aws-attach-admin-policy.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-002-aws-attach-admin-policy.kql",
+  "sigma_text": "title: AWS IAM Attach AdministratorAccess Policy\nid: RULE-002\ndescription: Detects attaching the AWS managed AdministratorAccess policy to a user.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: iam.amazonaws.com\n    eventName: AttachUserPolicy\n    requestParameters.policyArn|contains: AdministratorAccess\n  filter_known_automation:\n    userIdentity.sessionContext.sessionIssuer.userName: ApprovedAutomationRole\n  condition: selection and not filter_known_automation\nfalsepositives:\n  - Intended privilege escalation by IAM administrators\n  - Approved automation roles attaching policies during provisioning\nlevel: critical\ntags:\n  - attack.t1098\n  - attack.privilege_escalation\n\n",
+  "elastic_text": "eventSource:\"iam.amazonaws.com\" and eventName:\"AttachUserPolicy\" and requestParameters.policyArn:*AdministratorAccess* and not userIdentity.sessionContext.sessionIssuer.userName:\"ApprovedAutomationRole\"",
+  "elastic_kql": "eventSource:\"iam.amazonaws.com\" and eventName:\"AttachUserPolicy\" and requestParameters.policyArn:*AdministratorAccess* and not userIdentity.sessionContext.sessionIssuer.userName:\"ApprovedAutomationRole\"",
+  "elastic_esql": "FROM logs | WHERE eventSource:\"iam.amazonaws.com\" and eventName:\"AttachUserPolicy\" and requestParameters.policyArn:*AdministratorAccess* and not userIdentity.sessionContext.sessionIssuer.userName:\"ApprovedAutomationRole\"",
+  "logsource": "aws/cloudtrail",
+  "tags": [
+    "attack.t1098",
+    "attack.privilege_escalation"
+  ],
+  "tactic": "Privilege Escalation",
+  "techniques": [
+    "T1098"
+  ],
+  "severity": "critical",
+  "status": "failing",
+  "confidence": 91,
+  "noise_risk": 48,
+  "quality_score": 75,
+  "fields_used": [
+    "eventSource",
+    "eventName",
+    "requestParameters.policyArn",
+    "userIdentity.sessionContext.sessionIssuer.userName"
+  ],
+  "false_positive_notes": [
+    "Intended privilege escalation by IAM administrators",
+    "Approved automation roles attaching policies during provisioning"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.ip_ranges",
+      "description": "Exclude trusted corporate egress ranges to reduce noise.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": false,
+    "severity": "critical",
+    "fields_used": [
+      "eventSource",
+      "eventName",
+      "requestParameters.policyArn",
+      "userIdentity.sessionContext.sessionIssuer.userName"
+    ],
+    "contains_or_regex_clauses": 1,
+    "has_false_positive_notes": true,
+    "status": "stable"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "eventSource",
+          "op": "eq",
+          "values": [
+            "iam.amazonaws.com"
+          ]
+        },
+        {
+          "field": "eventName",
+          "op": "eq",
+          "values": [
+            "AttachUserPolicy"
+          ]
+        },
+        {
+          "field": "requestParameters.policyArn",
+          "op": "contains",
+          "values": [
+            "AdministratorAccess"
+          ]
+        }
+      ],
+      "filter_known_automation": [
+        {
+          "field": "userIdentity.sessionContext.sessionIssuer.userName",
+          "op": "eq",
+          "values": [
+            "ApprovedAutomationRole"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 1,
+        "time_to_detect_ms": 0,
+        "passed": false,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "history",
+              "value": "simulated regression"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 1,
+        "actual_alerts": 1,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "eventSource",
+              "value": "iam.amazonaws.com"
+            },
+            {
+              "field": "eventName",
+              "value": "AttachUserPolicy"
+            },
+            {
+              "field": "requestParameters.policyArn",
+              "value": "arn:aws:iam::aws:policy/AdministratorAccess"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 1,
+      "alerts_actual": 1
+    }
+  }
+}

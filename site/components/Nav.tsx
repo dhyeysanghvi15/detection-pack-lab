@@ -11,6 +11,7 @@ const tabs = [
   { href: "/stories", label: "Story Mode" },
   { href: "/health", label: "Pack Health" },
   { href: "/noise", label: "Noise Lab" },
+  { href: "/diff", label: "Diff" },
   { href: "/schema", label: "Schema Analyzer" }
 ];
 

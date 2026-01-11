@@ -1,0 +1,4 @@
+{"@timestamp":"2026-01-01T00:07:01Z","EventID":4698,"TaskName":"\\Vendor\\Updater","TaskContent":"<Command>C:\\Program Files\\Vendor\\updater.exe</Command>","SubjectUserName":"admin"}
+{"@timestamp":"2026-01-01T00:07:02Z","EventID":4624,"LogonType":2,"SubjectUserName":"alice"}
+{"@timestamp":"2026-01-01T00:07:03Z","EventID":4698,"TaskName":"\\Microsoft\\Windows\\Defrag\\ScheduledDefrag","TaskContent":"<Command>defrag.exe</Command>","SubjectUserName":"SYSTEM"}
+

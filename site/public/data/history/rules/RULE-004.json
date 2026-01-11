@@ -1,0 +1,138 @@
+{
+  "id": "RULE-004",
+  "name": "Entra ID Admin Consent Granted to Application",
+  "title": "Entra ID Admin Consent Granted to Application",
+  "description": "Detects tenant-wide (AllPrincipals) consent granted to an application, a common persistence and privilege pathway.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-004-entra-admin-consent.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-004-entra-admin-consent.kql",
+  "sigma_text": "title: Entra ID Admin Consent Granted to Application\nid: RULE-004\ndescription: Detects tenant-wide (AllPrincipals) consent granted to an application, a common persistence and privilege pathway.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: azure\n  service: entra_id\ndetection:\n  selection:\n    activityDisplayName: Consent to application\n    consentType: AllPrincipals\n    result: success\n  condition: selection\nfalsepositives:\n  - Legitimate enterprise application onboarding\nlevel: high\ntags:\n  - attack.t1098\n  - attack.persistence\n\n",
+  "elastic_text": "activityDisplayName:\"Consent to application\" and consentType:\"AllPrincipals\" and result:\"success\"",
+  "elastic_kql": "activityDisplayName:\"Consent to application\" and consentType:\"AllPrincipals\" and result:\"success\"",
+  "elastic_esql": "FROM logs | WHERE activityDisplayName:\"Consent to application\" and consentType:\"AllPrincipals\" and result:\"success\"",
+  "logsource": "azure/entra_id",
+  "tags": [
+    "attack.t1098",
+    "attack.persistence"
+  ],
+  "tactic": "Persistence",
+  "techniques": [
+    "T1098"
+  ],
+  "severity": "high",
+  "status": "passing",
+  "confidence": 85,
+  "noise_risk": 25,
+  "quality_score": 81,
+  "fields_used": [
+    "activityDisplayName",
+    "consentType",
+    "result"
+  ],
+  "false_positive_notes": [
+    "Legitimate enterprise application onboarding"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.ip_ranges",
+      "description": "Exclude trusted corporate egress ranges to reduce noise.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "high",
+    "fields_used": [
+      "activityDisplayName",
+      "consentType",
+      "result"
+    ],
+    "contains_or_regex_clauses": 0,
+    "has_false_positive_notes": true,
+    "status": "stable"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "activityDisplayName",
+          "op": "eq",
+          "values": [
+            "Consent to application"
+          ]
+        },
+        {
+          "field": "consentType",
+          "op": "eq",
+          "values": [
+            "AllPrincipals"
+          ]
+        },
+        {
+          "field": "result",
+          "op": "eq",
+          "values": [
+            "success"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "activityDisplayName",
+              "value": "Consent to application"
+            }
+          ],
+          "failed_clause": "consentType eq ['AllPrincipals']",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 1,
+        "actual_alerts": 1,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "activityDisplayName",
+              "value": "Consent to application"
+            },
+            {
+              "field": "consentType",
+              "value": "AllPrincipals"
+            },
+            {
+              "field": "result",
+              "value": "success"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 1,
+      "alerts_actual": 1
+    }
+  }
+}

