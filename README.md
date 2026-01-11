@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/hero.svg" alt="Detection Pack Lab" width="920" />
+  <img src="docs/assets/hero.svg?raw=1" alt="Detection Pack Lab" width="920" />
 </p>
 
 # Detection Pack Lab — Sigma → Elastic + Validation Harness
