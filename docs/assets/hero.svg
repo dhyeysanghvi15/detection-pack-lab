@@ -55,7 +55,7 @@
     <g transform="translate(78,220)">
       <text class="mono" x="0" y="0">docker compose up --build</text>
       <text class="mono" x="0" y="20">python harness/run.py test  •  python harness/run.py artifacts</text>
-      <text class="mono" x="0" y="40">cd site && npm ci && npm run build && npm run export</text>
+      <text class="mono" x="0" y="40">cd site &amp;&amp; npm ci &amp;&amp; npm run build &amp;&amp; npm run export</text>
     </g>
   </g>
 
@@ -83,4 +83,3 @@
     </g>
   </g>
 </svg>
-
