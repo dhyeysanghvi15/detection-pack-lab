@@ -28,7 +28,7 @@ services:
     depends_on:
       artifacts:
         condition: service_completed_successfully
-    command: ["sh", "-lc", "npm ci && npm run build && npm run export"]
+    command: ["sh", "-lc", "rm -rf .next && npm ci && npm run build && npm run export"]
 
   site:
     image: nginx:alpine
