@@ -4,15 +4,15 @@
 
 # Detection Pack Lab — Sigma → Elastic + Validation Harness
 
-**Detection engineering portfolio repo** that ships **detections + proof**:
-Sigma rules → Elastic queries → deterministic replay validation → artifact-driven static evidence site (CI-verifiable, offline).
+Detection engineering portfolio that ships **detections + proof**:
+**Sigma rules → Elastic queries → deterministic replay validation → CI artifacts → static evidence website** (offline, no backend).
 
 <p align="center">
   <a href="#run-in-60-seconds-docker"><b>Run in 60 seconds</b></a> ·
-  <a href="#what-you-built"><b>What you built</b></a> ·
+  <a href="#what-i-built"><b>What I built</b></a> ·
   <a href="#skills-demonstrated"><b>Skills</b></a> ·
-  <a href="#demo-in-90-seconds"><b>90s demo</b></a> ·
-  <a href="docs/TEST_REPORT.md"><b>Test report</b></a>
+  <a href="#demo-in-90-seconds"><b>Demo (90s)</b></a> ·
+  <a href="docs/TEST_REPORT.md"><b>End-to-end test report</b></a>
 </p>
 
 ---
@@ -23,24 +23,26 @@ docker compose up --build
 ```
 - Runs harness tests → generates artifacts → builds static site → serves at `http://localhost:3000`
 
-## What you built
-- **20 Sigma rules** in `rules/sigma/` with ATT&CK tags and FP/tuning notes.
-- **20 Elastic query equivalents** in `rules/elastic/` (best-effort KQL for demo portability).
-- **Replay validation harness (Python)** that replays synthetic JSONL logs and asserts expected rule firing.
-- **Static evidence site (Next.js export)** that renders **only** from `site/public/data/*` artifacts (no backend).
-- **CI pipeline + Pages deploy** so the website always matches the latest test results.
+## What I built
+I built a small but production-style detection pack that proves detections work:
+- **20 portable Sigma rules** in `rules/sigma/` (ATT&CK mapping, severity, FP notes).
+- **Elastic query outputs** in `rules/elastic/` (best-effort KQL; ES|QL copy also supported in the site).
+- **Deterministic replay harness** (Python) that validates rules against **synthetic JSONL logs** with **expected outcomes**.
+- **Stable artifact contract** (`site/public/data/*`) validated via JSON Schema.
+- **Static evidence website** (Next.js export) that visualizes detections, tests, replay, noise, coverage, diffs, and pack health using the artifacts only.
+- **CI workflows + Docker** so anyone can run it quickly and get the same results.
 
-## Why this is recruiter-friendly
-- It’s not “just rules” — every rule has **evidence**, an **expected outcome**, and a **CI-verified proof page**.
-- The site lets you **replay events**, see **why a rule matched**, simulate **environment tuning**, and compare **pack diffs** across snapshots.
+## Project highlights
+- Full detection lifecycle: author → convert → validate → ship artifacts → visualize evidence.
+- Built like a real detection program: **repeatable validation**, **artifact contracts**, and **evidence-first UX**.
 
 ## Demo in 90 seconds
 1) Open `/` → pass rate + pack scoreboard trend (history snapshot).
-2) Open `/rules/` → search “IAM” or “T1098” → click a rule.
-3) On `/rules/RULE-002/` → “Why fired / Why didn’t” + Validation Proof.
-4) Use Replay Player → switch **Environment Profile** → watch alert count change.
-5) Open `/noise/` → baseline vs suppressed estimates + patch snippet.
-6) Open `/diff/` → show pack changes vs `public/data/history/`.
+2) Open `/rules/` → search `T1098` or `IAM` → open a rule.
+3) On `/rules/RULE-002/` → expected vs actual + “Why fired / Why didn’t”.
+4) Replay Player → switch **Environment Profile** → alert count changes on benign replay.
+5) Open `/noise/` → baseline vs suppressed estimates + tuning patch snippet.
+6) Open `/diff/` → compare pack vs `public/data/history/` snapshot.
 
 ## Run locally
 ### 1) Harness tests (Python 3.11+)
@@ -79,6 +81,19 @@ npm run export
   - per-rule detail (`site/public/data/rules/RULE-XXX.json`)
   - exported replay streams (`site/public/data/events/RULE-XXX_*.jsonl`)
 
+## Skills demonstrated
+Proof-first skills, with where to find the evidence:
+
+| Skill area | What I implemented | Where to look |
+|---|---|---|
+| Detection engineering | Sigma authoring, severity, false positive notes, ATT&CK mapping | `rules/sigma/`, `docs/mapping.md`, `docs/tuning.md` |
+| SIEM query design | Best-effort Sigma→Elastic KQL conversions and copy-as suite | `rules/elastic/`, `site/components/CopyAsButtons.tsx` |
+| Validation engineering | Deterministic replay, expected outcomes, explainable “why” output | `harness/evaluate.py`, `tests/cases/`, `site/public/data/results.json` |
+| Data contracts | JSON Schema validation + sanity checks for artifacts | `harness/schemas.py`, `harness/validate_artifacts.py` |
+| CI/CD | Tests → artifacts → static build → Pages deploy | `.github/workflows/ci.yml`, `.github/workflows/pages.yml` |
+| Docker/DevEx | Single-command runnable demo with HTTP checks | `docker-compose.yml`, `scripts/http_sanity.py` |
+| Frontend evidence UX | Artifact-driven UI with replay, noise lab, story mode, diff/history | `site/app/`, `site/components/` |
+
 ## Site pages (all offline; backed by artifacts)
 - `/` — dashboard + pack scoreboard + trend (history-aware)
 - `/rules` — rule explorer (search + filters + sort)
@@ -107,13 +122,6 @@ flowchart LR
   E --> F[GitHub Pages]
 ```
 
-## Skills demonstrated
-- Detection engineering: Sigma authoring, ATT&CK mapping, FP/tuning documentation
-- Validation: deterministic replay harness, expected outcomes, explainable “why” reasoning
-- Data/quality engineering: stable artifact contracts + schema validation + pack health metrics
-- DevOps/CI: GitHub Actions pipeline, reproducible Docker “one command” demo, Pages deploy-ready
-- Product thinking: evidence-first UX (replay, noise lab, story mode, diff/history)
-
 ## Artifacts contract (validated)
 The harness enforces JSON Schema validation for:
 - `site/public/data/meta.json`
@@ -124,3 +132,12 @@ The harness enforces JSON Schema validation for:
 
 ## Release notes
 See `docs/RELEASE_NOTES.md` (and `CHANGELOG.md` for version history).
+
+## Limitations
+- Sigma evaluation supports a pragmatic subset (field equality + string operators + numeric comparisons + boolean `condition` logic).
+- Elastic conversions are best-effort KQL for demo rules (not a full Sigma backend).
+
+## Roadmap
+- Add more rules + richer semantics (thresholding, grouping, aggregation-style detections)
+- Add more history snapshots and pack regression gates
+- Add mapping presets for ECS normalization per logsource
